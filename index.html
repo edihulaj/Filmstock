@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Filmstock - All in One</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <header>
+        <div class="nav-container">
+            <div class="logo" onclick="switchPage('home')">
+                <i class="fa-solid fa-film"></i> Filmstock
+            </div>
+
+            <nav>
+                <ul class="nav-links" id="navLinks">
+                    <li onclick="switchPage('home')" id="nav-home" class="active">Home</li>
+                    <li onclick="switchPage('effects')" id="nav-effects">Effects</li>
+                    <li onclick="switchPage('videos')" id="nav-videos">Videos</li>
+                    <li onclick="switchPage('audio')" id="nav-audio">Audio</li>
+                    <li onclick="switchPage('images')" id="nav-images">Images</li>
+                    <li onclick="switchPage('3d')" id="nav-3d">3D</li>
+                </ul>
+            </nav>
+
+            <div class="nav-right">
+                <div class="search-bar">
+                    <input type="text" placeholder="Search...">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                </div>
+                <a href="#" onclick="switchPage('pricing')" class="btn-pricing">Pricing</a>
+                
+                <div id="user-icon-container" style="display: flex; gap: 10px;">
+                    </div>
+                
+                <div class="hamburger" onclick="toggleMobileMenu()">
+                    <i class="fa-solid fa-bars"></i>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main id="main-content">
+        
+        <div id="page-home" class="page-section">
+            <section class="hero" style="background-image: url('https://images.unsplash.com/photo-1550751827-4bd374c3f58b?q=80&w=2070&auto=format&fit=crop');">
+                <div class="hero-overlay"></div>
+                <div class="hero-content">
+                    <h1>Unlimited Royalty-Free Video Effects, Audio & Stock Media</h1>
+                    <p>Your one-stop shop for video assets.</p>
+                    <div class="hero-search">
+                        <input type="text" placeholder="Search for assets...">
+                        <button><i class="fa-solid fa-magnifying-glass"></i></button>
+                    </div>
+                </div>
+            </section>
+            <section class="section-container">
+                <h2 class="section-title">New And Popular</h2>
+                <div class="asset-grid" id="home-asset-grid"></div>
+            </section>
+        </div>
+
+        <div id="page-audio" class="page-section hidden">
+            <section class="hero small-hero" style="background-image: url('https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?q=80&w=2070');">
+                <div class="hero-overlay"></div>
+                <div class="hero-content"><h1>Royalty Free Music</h1></div>
+            </section>
+            <section class="section-container">
+                <div class="audio-list" id="audio-list-container"></div>
+            </section>
+        </div>
+
+        <div id="page-videos" class="page-section hidden">
+             <section class="hero small-hero" style="background-image: url('https://images.unsplash.com/photo-1574717432707-c6726615875d?q=80&w=2070');">
+                <div class="hero-overlay"></div>
+                <div class="hero-content"><h1>Stock Footage</h1></div>
+            </section>
+            <section class="section-container">
+                <div class="grid-masonry">
+                    <div class="cat-card item-wide"><img src="https://images.unsplash.com/photo-1535016120720-40c6874c3b1d?q=80&w=2064"><div class="cat-text">Nature</div></div>
+                    <div class="cat-card"><img src="https://images.unsplash.com/photo-1550745165-9bc0b252726f?q=80&w=2070"><div class="cat-text">Tech</div></div>
+                    <div class="cat-card"><img src="https://images.unsplash.com/photo-1596495578065-6e0763fa1178?q=80&w=2070"><div class="cat-text">Gaming</div></div>
+                </div>
+            </section>
+        </div>
+
+        <div id="page-images" class="page-section hidden">
+             <section class="hero small-hero" style="background-image: url('https://images.unsplash.com/photo-1501612780327-45045538702b?q=80&w=2070');">
+                <div class="hero-overlay"></div>
+                <div class="hero-content"><h1>Stock Photos</h1></div>
+            </section>
+            <section class="section-container">
+                <div class="asset-grid" id="image-asset-grid"></div>
+            </section>
+        </div>
+
+        <div id="page-effects" class="page-section hidden">
+            <section class="hero small-hero" style="background-image: url('https://images.unsplash.com/photo-1576085898323-218337e3e43c?q=80&w=2070');">
+                <div class="hero-overlay"></div>
+                <div class="hero-content"><h1>Video Effects</h1></div>
+            </section>
+            <section class="section-container">
+                <div class="asset-grid" id="effects-asset-grid"></div>
+            </section>
+        </div>
+
+        <div id="page-3d" class="page-section hidden">
+            <section class="section-container" style="text-align: center; padding-top: 100px;">
+                <i class="fa-solid fa-cube" style="font-size: 5rem; margin-bottom: 20px;"></i>
+                <h1>3D Assets Coming Soon</h1>
+            </section>
+        </div>
+
+        <div id="page-pricing" class="page-section hidden">
+            <div class="pricing-header">
+                <h1>Choose your Plan</h1>
+                <p>Unlock the full potential of your creativity.</p>
+            </div>
+            <div class="pricing-grid">
+                <div class="price-card">
+                    <div class="plan-name">Monthly</div>
+                    <div class="price-amount">$36.96<span class="price-period">/mo</span></div>
+                    <button class="btn-plan btn-outline">Buy Now</button>
+                    <ul class="plan-features"><li>Standard Assets</li><li>HD Downloads</li></ul>
+                </div>
+                <div class="price-card popular">
+                    <div class="popular-badge">Best Value</div>
+                    <div class="plan-name">Quarterly</div>
+                    <div class="price-amount">$39.99<span class="price-period">/qtr</span></div>
+                    <button class="btn-plan btn-fill">Buy Now</button>
+                    <ul class="plan-features"><li>Everything in Monthly</li><li>4K Downloads</li><li>Premium Support</li></ul>
+                </div>
+                <div class="price-card">
+                    <div class="plan-name">Annual</div>
+                    <div class="price-amount">$99.99<span class="price-period">/yr</span></div>
+                    <button class="btn-plan btn-outline">Buy Now</button>
+                    <ul class="plan-features"><li>Unlimited Access</li><li>Commercial License</li></ul>
+                </div>
+            </div>
+            <div class="faq-section">
+                <h2>FAQ</h2>
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFaq(this)">Can I cancel anytime? <i class="fa-solid fa-chevron-down"></i></div>
+                    <div class="faq-answer">Yes, cancel easily from your account settings.</div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFaq(this)">What is the refund policy? <i class="fa-solid fa-chevron-down"></i></div>
+                    <div class="faq-answer">We offer a 30-day money-back guarantee.</div>
+                </div>
+            </div>
+        </div>
+
+        <div id="page-login" class="page-section hidden">
+            <div class="auth-container-wrapper">
+                <div class="auth-container">
+                    <div class="auth-left">
+                        <h2>Welcome Back</h2>
+                        <p>Login to access your downloads and collections.</p>
+                        <i class="fa-solid fa-layer-group" style="font-size: 5rem; margin-top: 30px; opacity: 0.5;"></i>
+                    </div>
+                    <div class="auth-right">
+                        <div class="auth-card">
+                            <h2>Log In</h2>
+                            <div class="social-login">
+                                <div class="social-btn"><i class="fa-brands fa-google"></i></div>
+                                <div class="social-btn"><i class="fa-brands fa-facebook"></i></div>
+                            </div>
+                            <p class="divider">or</p>
+                            <form onsubmit="handleLogin(event)">
+                                <div class="form-group">
+                                    <label>Email</label>
+                                    <input type="email" id="login-email" class="form-control" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>Password</label>
+                                    <input type="password" id="login-pass" class="form-control" required>
+                                </div>
+                                <button type="submit" class="btn-submit">Log In</button>
+                            </form>
+                            <p class="auth-footer">No account? <a href="#" onclick="switchPage('signup')">Sign up</a></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="page-signup" class="page-section hidden">
+            <div class="auth-container-wrapper">
+                <div class="auth-container">
+                    <div class="auth-left">
+                        <h2>Join Us</h2>
+                        <p>Create an account to start downloading free assets.</p>
+                        <i class="fa-solid fa-rocket" style="font-size: 5rem; margin-top: 30px; opacity: 0.5;"></i>
+                    </div>
+                    <div class="auth-right">
+                        <div class="auth-card">
+                            <h2>Create Account</h2>
+                            <form onsubmit="handleSignup(event)">
+                                <div class="form-group">
+                                    <label>Name</label>
+                                    <input type="text" id="signup-name" class="form-control" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>Email</label>
+                                    <input type="email" id="signup-email" class="form-control" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>Password</label>
+                                    <input type="password" id="signup-pass" class="form-control" required>
+                                </div>
+                                <button type="submit" class="btn-submit">Sign Up</button>
+                            </form>
+                            <p class="auth-footer">Has account? <a href="#" onclick="switchPage('login')">Log in</a></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="page-profile" class="page-section hidden section-container">
+            <div id="profile-content">
+                <h1 style="text-align: center; padding: 50px;">Loading Profile...</h1>
+            </div>
+        </div>
+
+    </main>
+
+    <footer>
+        <div class="footer-grid">
+            <div class="footer-col brand-info">
+                <div class="logo"><i class="fa-solid fa-film"></i> Filmstock</div>
+                <p style="margin-top:10px; color:#888;">The ultimate platform for royalty-free video effects, audio, and stock media assets.</p>
+                <div class="social-links">
+                    <a href="#"><i class="fa-brands fa-facebook"></i></a>
+                    <a href="#"><i class="fa-brands fa-twitter"></i></a>
+                    <a href="#"><i class="fa-brands fa-instagram"></i></a>
+                    <a href="#"><i class="fa-brands fa-youtube"></i></a>
+                </div>
+            </div>
+            <div class="footer-col">
+                <h4>Products</h4>
+                <ul>
+                    <li><a href="#" onclick="switchPage('effects')">Video Effects</a></li>
+                    <li><a href="#" onclick="switchPage('audio')">Royalty-Free Music</a></li>
+                    <li><a href="#" onclick="switchPage('videos')">Stock Footage</a></li>
+                    <li><a href="#" onclick="switchPage('images')">Stock Images</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Company</h4>
+                <ul>
+                    <li><a href="#">About Us</a></li>
+                    <li><a href="#">Careers</a></li>
+                    <li><a href="#" onclick="switchPage('pricing')">Pricing & Plans</a></li>
+                    <li><a href="#">License Agreement</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Support</h4>
+                <ul>
+                    <li><a href="#">Help Center</a></li>
+                    <li><a href="#">FAQ</a></li>
+                    <li><a href="#">Contact Us</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 Filmstock. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <div id="asset-modal" class="modal-overlay hidden" onclick="closeModal(event)">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <div class="modal-close" onclick="closeModal()"><i class="fa-solid fa-times"></i></div>
+            <div id="modal-body">
+                </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
