@@ -1,290 +1,619 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Filmstock - All in One</title>
-    
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <title>Shutterstock Clone</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
-    <link rel="stylesheet" href="style.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: sans-serif;
+        }
+        
+        body {
+            background-color: black;
+            color: white;
+        }
+        
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 40px;
+            border-bottom: 1px solid darkgray;
+            background-color: black;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: white;
+            cursor: pointer;
+        }
+        
+        nav a {
+            color: gray;
+            text-decoration: none;
+            margin: 0 10px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        
+        nav a:hover,
+        nav a.aktive {
+            color: white;
+        }
+        
+        .faqja {
+            display: none;
+            min-height: 80vh;
+        }
+        
+        .faqja.aktive {
+            display: block;
+        }
+        
+        .ballina {
+            height: 400px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(to right, black, darkred, black);
+            text-align: center;
+        }
+        
+        .ballina h1 {
+            font-size: 40px;
+            margin-bottom: 20px;
+        }
+        
+        .shiriti-kerkimit {
+            background: white;
+            padding: 10px 20px;
+            border-radius: 50px;
+            width: 50%;
+            display: flex;
+            align-items: center;
+            min-width: 300px;
+        }
+        
+        .shiriti-kerkimit input {
+            border: none;
+            outline: none;
+            width: 100%;
+            padding-left: 10px;
+            font-size: 16px;
+        }
+        
+        .shiriti-kerkimit i {
+            color: black;
+        }
+        
+        .kontejneri-kryesor {
+            display: flex;
+            padding: 20px;
+        }
+        
+        .shiriti-anesor {
+            width: 250px;
+            padding: 20px 10px 20px 0;
+            border-right: 1px solid darkgray;
+            flex-shrink: 0;
+        }
+        
+        .shiriti-anesor h3 {
+            margin-bottom: 20px;
+            font-size: 18px;
+        }
+        
+        .grup-filtri {
+            margin-bottom: 25px;
+            border-bottom: 1px solid gray;
+            padding-bottom: 15px;
+        }
+        
+        .grup-filtri strong {
+            display: block;
+            margin-bottom: 10px;
+            color: white;
+            font-size: 14px;
+        }
+        
+        .grup-filtri select,
+        .grup-filtri input[type="checkbox"] {
+            margin-right: 5px;
+        }
+        
+        .grup-filtri select {
+            width: 100%;
+            padding: 8px;
+            background-color: rgb(30, 30, 30);
+            color: white;
+            border: 1px solid gray;
+            border-radius: 4px;
+        }
+        
+        .pjesa-permbajtjes {
+            flex-grow: 1;
+            padding: 20px;
+        }
+        
+        .rrjeti-galerise {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+        }
+        
+        .foto-element {
+            height: 150px;
+            background-color: darkgray;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        
+        .foto-element img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .kontejneri-cmimeve {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            padding: 50px;
+        }
+        
+        .karta-cmimit {
+            border: 1px solid white;
+            padding: 30px;
+            width: 250px;
+            text-align: center;
+            border-radius: 8px;
+        }
+        
+        .karta-cmimit h3 {
+            margin-bottom: 10px;
+        }
+        
+        .karta-cmimit .cmimi {
+            font-size: 30px;
+            font-weight: bold;
+            margin: 20px 0;
+        }
+        
+        .butoni-cmimit {
+            background-color: white;
+            color: black;
+            border: none;
+            padding: 10px 20px;
+            width: 100%;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        
+        .korniza-hyrjes {
+            display: flex;
+            height: 85vh;
+            width: 100%;
+        }
+        
+        .pjesa-majte {
+            flex: 1;
+            background-image: url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=2072&auto=format&fit=crop');
+            background-size: cover;
+            background-position: center;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 60px;
+        }
+        
+        .shtresa-maske {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to bottom, midnightblue, black);
+            opacity: 0.7;
+        }
+        
+        .pjesa-majte-tekst {
+            position: relative;
+            z-index: 2;
+            text-align: left;
+            max-width: 80%;
+        }
+        
+        .pjesa-majte-tekst h1 {
+            font-size: 40px;
+            margin-bottom: 20px;
+            line-height: 1.2;
+        }
+        
+        .pjesa-majte-tekst p {
+            font-size: 18px;
+            line-height: 1.5;
+            color: lightgray;
+        }
+        
+        .pjesa-djathte {
+            flex: 1;
+            background-color: rgb(20, 20, 20);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 40px;
+        }
+        
+        .kutia-hyrjes {
+            width: 400px;
+        }
+        
+        .titulli-hyrjes {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+        
+        .titulli-hyrjes h2 {
+            font-size: 28px;
+        }
+        
+        .grupi-input {
+            margin-bottom: 20px;
+        }
+        
+        .grupi-input label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 14px;
+            color: lightgray;
+        }
+        
+        .grupi-input input {
+            width: 100%;
+            padding: 12px;
+            background-color: black;
+            border: 1px solid gray;
+            color: white;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        
+        .linku-harreses {
+            color: white;
+            font-size: 14px;
+            text-decoration: underline;
+            margin-bottom: 30px;
+            display: block;
+        }
+        
+        .butoni-dergo {
+            background-color: black;
+            color: white;
+            border: none;
+            width: 100%;
+            padding: 12px;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 16px;
+            margin-bottom: 20px;
+        }
+        
+        .butoni-dergo:hover {
+            text-decoration: underline;
+        }
+        
+        .butoni-sso {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 10px;
+            background-color: transparent;
+            border: 1px solid gray;
+            color: white;
+            border-radius: 4px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        
+        .butoni-sso:hover {
+            border-color: white;
+        }
+        
+        .ndaresja {
+            text-align: center;
+            margin: 20px 0;
+            color: gray;
+            font-size: 14px;
+        }
+        
+        .linku-poshte {
+            margin-top: 20px;
+            text-align: center;
+            font-size: 14px;
+        }
+        
+        .linku-poshte button {
+            background-color: transparent;
+            border: 1px solid gray;
+            color: white;
+            padding: 10px;
+            width: 100%;
+            border-radius: 4px;
+            margin-top: 10px;
+            cursor: pointer;
+        }
+    </style>
 </head>
+
 <body>
 
     <header>
-        <div class="nav-container">
-            <div class="logo" onclick="switchPage('home')">
-                <i class="fa-solid fa-film"></i> Filmstock
-            </div>
-
-            <nav>
-                <ul class="nav-links" id="navLinks">
-                    <li onclick="switchPage('home')" id="nav-home" class="active">Home</li>
-                    <li onclick="switchPage('effects')" id="nav-effects">Effects</li>
-                    <li onclick="switchPage('videos')" id="nav-videos">Videos</li>
-                    <li onclick="switchPage('audio')" id="nav-audio">Audio</li>
-                    <li onclick="switchPage('images')" id="nav-images">Images</li>
-                    <li onclick="switchPage('3d')" id="nav-3d">3D</li>
-                </ul>
-            </nav>
-
-            <div class="nav-right">
-                <div class="search-bar">
-                    <input type="text" placeholder="Search...">
-                    <i class="fa-solid fa-magnifying-glass"></i>
-                </div>
-                <a href="#" onclick="switchPage('pricing')" class="btn-pricing">Pricing</a>
-                
-                <div id="user-icon-container" style="display: flex; gap: 10px;">
-                    </div>
-                
-                <div class="hamburger" onclick="toggleMobileMenu()">
-                    <i class="fa-solid fa-bars"></i>
-                </div>
-            </div>
-        </div>
+        <div class="logo" onclick="ndrroFaqen('kryefaqja')">shutterstock</div>
+        <nav>
+            <a onclick="ndrroFaqen('kryefaqja')">Home</a>
+            <a onclick="ndrroFaqen('galeria')">Images</a>
+            <a onclick="ndrroFaqen('efektet-zerit')">Sound FX (Film)</a>
+            <a onclick="ndrroFaqen('pako-vfx')">VFX Packs (Film)</a>
+            <a onclick="ndrroFaqen('animim-2d')">2D Animation (Social)</a>
+            <a onclick="ndrroFaqen('animim-3d')">3D Animation (Film)</a>
+            <a onclick="ndrroFaqen('cmimet')">Pricing</a>
+            <a onclick="ndrroFaqen('kycu')">Log in</a>
+            <a onclick="ndrroFaqen('regjistrohu')">Sign up</a>
+        </nav>
     </header>
 
-    <main id="main-content">
-        
-        <div id="page-home" class="page-section">
-            <section class="hero" style="background-image: url('https://images.unsplash.com/photo-1550751827-4bd374c3f58b?q=80&w=2070&auto=format&fit=crop');">
-                <div class="hero-overlay"></div>
-                <div class="hero-content">
-                    <h1>Unlimited Royalty-Free Video Effects, Audio & Stock Media</h1>
-                    <p>Your one-stop shop for video assets.</p>
-                    <div class="hero-search">
-                        <input type="text" placeholder="Search for assets...">
-                        <button><i class="fa-solid fa-magnifying-glass"></i></button>
-                    </div>
-                </div>
-            </section>
-            <section class="section-container">
-                <h2 class="section-title">New And Popular</h2>
-                <div class="asset-grid" id="home-asset-grid"></div>
-            </section>
-        </div>
-
-        <div id="page-audio" class="page-section hidden">
-            <section class="hero small-hero" style="background-image: url('https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?q=80&w=2070');">
-                <div class="hero-overlay"></div>
-                <div class="hero-content"><h1>Royalty Free Music</h1></div>
-            </section>
-            <section class="section-container">
-                <div class="audio-list" id="audio-list-container"></div>
-            </section>
-        </div>
-
-        <div id="page-videos" class="page-section hidden">
-             <section class="hero small-hero" style="background-image: url('https://images.unsplash.com/photo-1574717432707-c6726615875d?q=80&w=2070');">
-                <div class="hero-overlay"></div>
-                <div class="hero-content"><h1>Stock Footage</h1></div>
-            </section>
-            <section class="section-container">
-                <div class="grid-masonry">
-                    <div class="cat-card item-wide"><img src="https://images.unsplash.com/photo-1535016120720-40c6874c3b1d?q=80&w=2064"><div class="cat-text">Nature</div></div>
-                    <div class="cat-card"><img src="https://images.unsplash.com/photo-1550745165-9bc0b252726f?q=80&w=2070"><div class="cat-text">Tech</div></div>
-                    <div class="cat-card"><img src="https://images.unsplash.com/photo-1596495578065-6e0763fa1178?q=80&w=2070"><div class="cat-text">Gaming</div></div>
-                </div>
-            </section>
-        </div>
-
-        <div id="page-images" class="page-section hidden">
-             <section class="hero small-hero" style="background-image: url('https://images.unsplash.com/photo-1501612780327-45045538702b?q=80&w=2070');">
-                <div class="hero-overlay"></div>
-                <div class="hero-content"><h1>Stock Photos</h1></div>
-            </section>
-            <section class="section-container">
-                <div class="asset-grid" id="image-asset-grid"></div>
-            </section>
-        </div>
-
-        <div id="page-effects" class="page-section hidden">
-            <section class="hero small-hero" style="background-image: url('https://images.unsplash.com/photo-1576085898323-218337e3e43c?q=80&w=2070');">
-                <div class="hero-overlay"></div>
-                <div class="hero-content"><h1>Video Effects</h1></div>
-            </section>
-            <section class="section-container">
-                <div class="asset-grid" id="effects-asset-grid"></div>
-            </section>
-        </div>
-
-        <div id="page-3d" class="page-section hidden">
-            <section class="section-container" style="text-align: center; padding-top: 100px;">
-                <i class="fa-solid fa-cube" style="font-size: 5rem; margin-bottom: 20px;"></i>
-                <h1>3D Assets Coming Soon</h1>
-            </section>
-        </div>
-
-        <div id="page-pricing" class="page-section hidden">
-            <div class="pricing-header">
-                <h1>Choose your Plan</h1>
-                <p>Unlock the full potential of your creativity.</p>
-            </div>
-            <div class="pricing-grid">
-                <div class="price-card">
-                    <div class="plan-name">Monthly</div>
-                    <div class="price-amount">$36.96<span class="price-period">/mo</span></div>
-                    <button class="btn-plan btn-outline">Buy Now</button>
-                    <ul class="plan-features"><li>Standard Assets</li><li>HD Downloads</li></ul>
-                </div>
-                <div class="price-card popular">
-                    <div class="popular-badge">Best Value</div>
-                    <div class="plan-name">Quarterly</div>
-                    <div class="price-amount">$39.99<span class="price-period">/qtr</span></div>
-                    <button class="btn-plan btn-fill">Buy Now</button>
-                    <ul class="plan-features"><li>Everything in Monthly</li><li>4K Downloads</li><li>Premium Support</li></ul>
-                </div>
-                <div class="price-card">
-                    <div class="plan-name">Annual</div>
-                    <div class="price-amount">$99.99<span class="price-period">/yr</span></div>
-                    <button class="btn-plan btn-outline">Buy Now</button>
-                    <ul class="plan-features"><li>Unlimited Access</li><li>Commercial License</li></ul>
-                </div>
-            </div>
-            <div class="faq-section">
-                <h2>FAQ</h2>
-                <div class="faq-item">
-                    <div class="faq-question" onclick="toggleFaq(this)">Can I cancel anytime? <i class="fa-solid fa-chevron-down"></i></div>
-                    <div class="faq-answer">Yes, cancel easily from your account settings.</div>
-                </div>
-                <div class="faq-item">
-                    <div class="faq-question" onclick="toggleFaq(this)">What is the refund policy? <i class="fa-solid fa-chevron-down"></i></div>
-                    <div class="faq-answer">We offer a 30-day money-back guarantee.</div>
-                </div>
+    <div id="kryefaqja" class="faqja">
+        <div class="ballina">
+            <h1>Where great work starts</h1>
+            <div class="shiriti-kerkimit">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input type="text" placeholder="Search for images, videos, music...">
             </div>
         </div>
-
-        <div id="page-login" class="page-section hidden">
-            <div class="auth-container-wrapper">
-                <div class="auth-container">
-                    <div class="auth-left">
-                        <h2>Welcome Back</h2>
-                        <p>Login to access your downloads and collections.</p>
-                        <i class="fa-solid fa-layer-group" style="font-size: 5rem; margin-top: 30px; opacity: 0.5;"></i>
-                    </div>
-                    <div class="auth-right">
-                        <div class="auth-card">
-                            <h2>Log In</h2>
-                            <div class="social-login">
-                                <div class="social-btn"><i class="fa-brands fa-google"></i></div>
-                                <div class="social-btn"><i class="fa-brands fa-facebook"></i></div>
-                            </div>
-                            <p class="divider">or</p>
-                            <form onsubmit="handleLogin(event)">
-                                <div class="form-group">
-                                    <label>Email</label>
-                                    <input type="email" id="login-email" class="form-control" required>
-                                </div>
-                                <div class="form-group">
-                                    <label>Password</label>
-                                    <input type="password" id="login-pass" class="form-control" required>
-                                </div>
-                                <button type="submit" class="btn-submit">Log In</button>
-                            </form>
-                            <p class="auth-footer">No account? <a href="#" onclick="switchPage('signup')">Sign up</a></p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div id="page-signup" class="page-section hidden">
-            <div class="auth-container-wrapper">
-                <div class="auth-container">
-                    <div class="auth-left">
-                        <h2>Join Us</h2>
-                        <p>Create an account to start downloading free assets.</p>
-                        <i class="fa-solid fa-rocket" style="font-size: 5rem; margin-top: 30px; opacity: 0.5;"></i>
-                    </div>
-                    <div class="auth-right">
-                        <div class="auth-card">
-                            <h2>Create Account</h2>
-                            <form onsubmit="handleSignup(event)">
-                                <div class="form-group">
-                                    <label>Name</label>
-                                    <input type="text" id="signup-name" class="form-control" required>
-                                </div>
-                                <div class="form-group">
-                                    <label>Email</label>
-                                    <input type="email" id="signup-email" class="form-control" required>
-                                </div>
-                                <div class="form-group">
-                                    <label>Password</label>
-                                    <input type="password" id="signup-pass" class="form-control" required>
-                                </div>
-                                <button type="submit" class="btn-submit">Sign Up</button>
-                            </form>
-                            <p class="auth-footer">Has account? <a href="#" onclick="switchPage('login')">Log in</a></p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div id="page-profile" class="page-section hidden section-container">
-            <div id="profile-content">
-                <h1 style="text-align: center; padding: 50px;">Loading Profile...</h1>
-            </div>
-        </div>
-
-    </main>
-
-    <footer>
-        <div class="footer-grid">
-            <div class="footer-col brand-info">
-                <div class="logo"><i class="fa-solid fa-film"></i> Filmstock</div>
-                <p style="margin-top:10px; color:#888;">The ultimate platform for royalty-free video effects, audio, and stock media assets.</p>
-                <div class="social-links">
-                    <a href="#"><i class="fa-brands fa-facebook"></i></a>
-                    <a href="#"><i class="fa-brands fa-twitter"></i></a>
-                    <a href="#"><i class="fa-brands fa-instagram"></i></a>
-                    <a href="#"><i class="fa-brands fa-youtube"></i></a>
-                </div>
-            </div>
-            <div class="footer-col">
-                <h4>Products</h4>
-                <ul>
-                    <li><a href="#" onclick="switchPage('effects')">Video Effects</a></li>
-                    <li><a href="#" onclick="switchPage('audio')">Royalty-Free Music</a></li>
-                    <li><a href="#" onclick="switchPage('videos')">Stock Footage</a></li>
-                    <li><a href="#" onclick="switchPage('images')">Stock Images</a></li>
-                </ul>
-            </div>
-            <div class="footer-col">
-                <h4>Company</h4>
-                <ul>
-                    <li><a href="#">About Us</a></li>
-                    <li><a href="#">Careers</a></li>
-                    <li><a href="#" onclick="switchPage('pricing')">Pricing & Plans</a></li>
-                    <li><a href="#">License Agreement</a></li>
-                </ul>
-            </div>
-            <div class="footer-col">
-                <h4>Support</h4>
-                <ul>
-                    <li><a href="#">Help Center</a></li>
-                    <li><a href="#">FAQ</a></li>
-                    <li><a href="#">Contact Us</a></li>
-                </ul>
-            </div>
-        </div>
-        <div class="footer-bottom">
-            <p>&copy; 2025 Filmstock. All rights reserved.</p>
-        </div>
-    </footer>
-
-    <div id="asset-modal" class="modal-overlay hidden" onclick="closeModal(event)">
-        <div class="modal-content" onclick="event.stopPropagation()">
-            <div class="modal-close" onclick="closeModal()"><i class="fa-solid fa-times"></i></div>
-            <div id="modal-body">
-                </div>
+        <div style="padding: 40px; text-align: center;">
+            <h2>One platform, endless possibilities</h2>
+            <p style="color: gray; margin-top: 10px;">Access millions of assets.</p>
         </div>
     </div>
 
-    <script src="script.js"></script>
+    <div id="galeria" class="faqja aktive">
+        <div class="kontejneri-kryesor">
+            <div class="shiriti-anesor">
+                <h3>Filtro Galerinë (Film & Social Media)</h3>
+
+                <div class="grup-filtri">
+                    <strong>Zhanri i Filmit</strong>
+                    <select>
+                        <option>Të gjitha</option>
+                        <option>Aksion / Thriller</option>
+                        <option>Dramë / Romancë</option>
+                        <option>Sci-Fi / Fantazi</option>
+                        <option>Dokumentar</option>
+                    </select>
+                </div>
+
+                <div class="grup-filtri">
+                    <strong>Raporti i Aspektit (Për Video)</strong>
+                    <select>
+                        <option>Të gjitha</option>
+                        <option>2.35:1 (Kinema)</option>
+                        <option>16:9 (YouTube / TV)</option>
+                        <option>9:16 (TikTok / Reels)</option>
+                        <option>1:1 (Instagram Post)</option>
+                    </select>
+                </div>
+
+                <div class="grup-filtri">
+                    <strong>Përdorimi i Mediave Sociale</strong>
+                    <div><input type="checkbox"> Sfond i Stories</div>
+                    <div><input type="checkbox"> Ikonë / Logo</div>
+                    <div><input type="checkbox"> Ekrani i Fundit (End Screen)</div>
+                </div>
+
+                <div class="grup-filtri">
+                    <strong>Shpejtësia e Kuadrit (Frame Rate)</strong>
+                    <select>
+                        <option>Çdo shpejtësi</option>
+                        <option>24 fps (Standard Filmi)</option>
+                        <option>30 fps (Standard TV/Web)</option>
+                        <option>60 fps (Lëvizje e Qetë)</option>
+                    </select>
+                </div>
+
+                <div class="grup-filtri">
+                    <strong>Formati Optik</strong>
+                    <div><input type="checkbox"> Footage Video</div>
+                    <div><input type="checkbox"> Efekte (Overlays)</div>
+                    <div><input type="checkbox"> Sfond Muzikor</div>
+                </div>
+
+            </div>
+
+            <div class="pjesa-permbajtjes">
+                <h2>Imazhet dhe Videot e Rëndësishme</h2>
+                <div class="rrjeti-galerise">
+                    <div class="foto-element"><img src="movie1.jpg"></div>
+                    <div class="foto-element"><img src="m2.jpg"></div>
+                    <div class="foto-element"><img src="m3.jpg"></div>
+                    <div class="foto-element"><img src="m4.jpg"></div>
+                    <div class="foto-element"><img src="m5.jpg"></div>
+                    <div class="foto-element"><img src="m6.jpg"></div>
+                    <div class="foto-element"><img src="m7.jpg"></div>
+                    <div class="foto-element"><img src="m8.jpg"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="efektet-zerit" class="faqja">
+        <h2 style="padding: 40px; text-align: center;">Koleksioni i Efekteve të Zërit (Sound FX) për Film</h2>
+        <p style="text-align: center; color: gray;">Mijëra efekte audio të gatshme për projektin tuaj filmik.</p>
+        <div style="height: 300px; background-color: rgb(30, 30, 30); margin: 40px; display: flex; justify-content: center; align-items: center;">
+            <i class="fa-solid fa-volume-up" style="font-size: 50px;"></i>
+        </div>
+    </div>
+
+    <div id="pako-vfx" class="faqja">
+        <h2 style="padding: 40px; text-align: center;">Pako të Efekteve Vizuale (VFX Packs) për Film</h2>
+        <p style="text-align: center; color: gray;">Përmirësoni videon tuaj me shpërthime, shkëlqime dhe animacione për filma.</p>
+        <div style="height: 300px; background-color: rgb(40, 40, 40); margin: 40px; display: flex; justify-content: center; align-items: center;">
+            <i class="fa-solid fa-meteor" style="font-size: 50px;"></i>
+        </div>
+    </div>
+
+    <div id="animim-2d" class="faqja">
+        <h2 style="padding: 40px; text-align: center;">Animacione 2D për Media Sociale</h2>
+        <p style="text-align: center; color: gray;">Elementë të animuar, shkronja dhe tranzicione të optimizuara për postimet sociale.</p>
+        <div style="height: 300px; background-color: rgb(50, 50, 50); margin: 40px; display: flex; justify-content: center; align-items: center;">
+            <i class="fa-solid fa-layer-group" style="font-size: 50px;"></i>
+        </div>
+    </div>
+
+    <div id="animim-3d" class="faqja">
+        <h2 style="padding: 40px; text-align: center;">Animacione 3D për Film</h2>
+        <p style="text-align: center; color: gray;">Modele dhe animacione 3D profesionale për prodhime filmike.</p>
+        <div style="height: 300px; background-color: rgb(60, 60, 60); margin: 40px; display: flex; justify-content: center; align-items: center;">
+            <i class="fa-solid fa-cube" style="font-size: 50px;"></i>
+        </div>
+    </div>
+
+    <div id="cmimet" class="faqja">
+        <h2 style="text-align: center; margin-top: 40px;">Choose a Plan</h2>
+        <div class="kontejneri-cmimeve">
+            <div class="karta-cmimit">
+                <h3>Pack</h3>
+                <div class="cmimi">$29</div>
+                <p style="color: gray; margin-bottom: 20px;">5 Images on demand</p>
+                <button class="butoni-cmimit">Buy Now</button>
+            </div>
+            <div class="karta-cmimit" style="border-color: red;">
+                <h3>Subscription</h3>
+                <div class="cmimi">$49</div>
+                <p style="color: gray; margin-bottom: 20px;">10 Images / month</p>
+                <button class="butoni-cmimit" style="background-color: red; color: white;">Best Value</button>
+            </div>
+            <div class="karta-cmimit">
+                <h3>Team</h3>
+                <div class="cmimi">$99</div>
+                <p style="color: gray; margin-bottom: 20px;">Unlimited users</p>
+                <button class="butoni-cmimit">Contact Us</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="kycu" class="faqja">
+        <div class="korniza-hyrjes">
+            <div class="pjesa-majte">
+                <div class="shtresa-maske"></div>
+                <div class="pjesa-majte-tekst">
+                    <h1>Bring your ideas to life</h1>
+                    <p>Tell your story with compelling images, videos, and music. Access our library of over 500 million high-quality assets.</p>
+                </div>
+            </div>
+            <div class="pjesa-djathte">
+                <div class="kutia-hyrjes">
+                    <div class="titulli-hyrjes">
+                        <h2>Login or Signup</h2>
+                    </div>
+
+                    <div class="grupi-input">
+                        <label>Email or username</label>
+                        <input type="text" placeholder="Email or username">
+                    </div>
+                    <div class="grupi-input">
+                        <label>Password</label>
+                        <input type="password" placeholder="Password">
+                    </div>
+
+                    <a href="#" class="linku-harreses">Forgot your password?</a>
+
+                    <button class="butoni-dergo">Log in</button>
+
+                    <button class="butoni-sso">Log in with SSO</button>
+                    <button class="butoni-sso"><i class="fa-brands fa-google"></i> Continue with Google</button>
+                    <button class="butoni-sso"><i class="fa-brands fa-facebook"></i> Continue with Facebook</button>
+                    <button class="butoni-sso"><i class="fa-brands fa-apple"></i> Continue with Apple</button>
+
+                    <div class="ndaresja">or</div>
+
+                    <div class="linku-poshte">
+                        Don't have a free account yet?
+                        <button onclick="ndrroFaqen('regjistrohu')">Create your account</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="regjistrohu" class="faqja">
+        <div class="korniza-hyrjes">
+            <div class="pjesa-majte">
+                <div class="shtresa-maske"></div>
+                <div class="pjesa-majte-tekst">
+                    <h1>Join the community</h1>
+                    <p>Start downloading today. Get free weekly assets and try our AI tools.</p>
+                </div>
+            </div>
+            <div class="pjesa-djathte">
+                <div class="kutia-hyrjes">
+                    <div class="titulli-hyrjes">
+                        <h2>Create Account</h2>
+                    </div>
+
+                    <div class="grupi-input">
+                        <label>Full Name</label>
+                        <input type="text" placeholder="Full Name">
+                    </div>
+                    <div class="grupi-input">
+                        <label>Email</label>
+                        <input type="text" placeholder="Email address">
+                    </div>
+                    <div class="grupi-input">
+                        <label>Password</label>
+                        <input type="password" placeholder="Create a password">
+                    </div>
+
+                    <button class="butoni-dergo" style="background-color: red; margin-top: 10px;">Sign Up</button>
+
+                    <div class="linku-poshte">
+                        Already have an account?
+                        <button onclick="ndrroFaqen('kycu')">Log in</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function ndrroFaqen(idFaqes) {
+            const faqet = document.querySelectorAll('.faqja');
+            faqet.forEach(faqe => faqe.classList.remove('aktive'));
+
+            document.getElementById(idFaqes).classList.add('aktive');
+
+            window.scrollTo(0, 0);
+        }
+
+        ndrroFaqen('galeria');
+    </script>
 </body>
+
 </html>
