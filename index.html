@@ -6,613 +6,383 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Shutterstock Clone</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: sans-serif;
-        }
-        
-        body {
-            background-color: black;
-            color: white;
-        }
-        
-        header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 20px 40px;
-            border-bottom: 1px solid darkgray;
-            background-color: black;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-        
-        .logo {
-            font-size: 24px;
-            font-weight: bold;
-            color: white;
-            cursor: pointer;
-        }
-        
-        nav a {
-            color: gray;
-            text-decoration: none;
-            margin: 0 10px;
-            cursor: pointer;
-            font-size: 14px;
-        }
-        
-        nav a:hover,
-        nav a.aktive {
-            color: white;
-        }
-        
-        .faqja {
-            display: none;
-            min-height: 80vh;
-        }
-        
-        .faqja.aktive {
-            display: block;
-        }
-        
-        .ballina {
-            height: 400px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            background: linear-gradient(to right, black, darkred, black);
-            text-align: center;
-        }
-        
-        .ballina h1 {
-            font-size: 40px;
-            margin-bottom: 20px;
-        }
-        
-        .shiriti-kerkimit {
-            background: white;
-            padding: 10px 20px;
-            border-radius: 50px;
-            width: 50%;
-            display: flex;
-            align-items: center;
-            min-width: 300px;
-        }
-        
-        .shiriti-kerkimit input {
-            border: none;
-            outline: none;
-            width: 100%;
-            padding-left: 10px;
-            font-size: 16px;
-        }
-        
-        .shiriti-kerkimit i {
-            color: black;
-        }
-        
-        .kontejneri-kryesor {
-            display: flex;
-            padding: 20px;
-        }
-        
-        .shiriti-anesor {
-            width: 250px;
-            padding: 20px 10px 20px 0;
-            border-right: 1px solid darkgray;
-            flex-shrink: 0;
-        }
-        
-        .shiriti-anesor h3 {
-            margin-bottom: 20px;
-            font-size: 18px;
-        }
-        
-        .grup-filtri {
-            margin-bottom: 25px;
-            border-bottom: 1px solid gray;
-            padding-bottom: 15px;
-        }
-        
-        .grup-filtri strong {
-            display: block;
-            margin-bottom: 10px;
-            color: white;
-            font-size: 14px;
-        }
-        
-        .grup-filtri select,
-        .grup-filtri input[type="checkbox"] {
-            margin-right: 5px;
-        }
-        
-        .grup-filtri select {
-            width: 100%;
-            padding: 8px;
-            background-color: rgb(30, 30, 30);
-            color: white;
-            border: 1px solid gray;
-            border-radius: 4px;
-        }
-        
-        .pjesa-permbajtjes {
-            flex-grow: 1;
-            padding: 20px;
-        }
-        
-        .rrjeti-galerise {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            gap: 15px;
-        }
-        
-        .foto-element {
-            height: 150px;
-            background-color: darkgray;
-            border-radius: 4px;
-            overflow: hidden;
-        }
-        
-        .foto-element img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-        
-        .kontejneri-cmimeve {
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            padding: 50px;
-        }
-        
-        .karta-cmimit {
-            border: 1px solid white;
-            padding: 30px;
-            width: 250px;
-            text-align: center;
-            border-radius: 8px;
-        }
-        
-        .karta-cmimit h3 {
-            margin-bottom: 10px;
-        }
-        
-        .karta-cmimit .cmimi {
-            font-size: 30px;
-            font-weight: bold;
-            margin: 20px 0;
-        }
-        
-        .butoni-cmimit {
-            background-color: white;
-            color: black;
-            border: none;
-            padding: 10px 20px;
-            width: 100%;
-            cursor: pointer;
-            font-weight: bold;
-        }
-        
-        .korniza-hyrjes {
-            display: flex;
-            height: 85vh;
-            width: 100%;
-        }
-        
-        .pjesa-majte {
-            flex: 1;
-            background-image: url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=2072&auto=format&fit=crop');
-            background-size: cover;
-            background-position: center;
-            position: relative;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            padding: 60px;
-        }
-        
-        .shtresa-maske {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(to bottom, midnightblue, black);
-            opacity: 0.7;
-        }
-        
-        .pjesa-majte-tekst {
-            position: relative;
-            z-index: 2;
-            text-align: left;
-            max-width: 80%;
-        }
-        
-        .pjesa-majte-tekst h1 {
-            font-size: 40px;
-            margin-bottom: 20px;
-            line-height: 1.2;
-        }
-        
-        .pjesa-majte-tekst p {
-            font-size: 18px;
-            line-height: 1.5;
-            color: lightgray;
-        }
-        
-        .pjesa-djathte {
-            flex: 1;
-            background-color: rgb(20, 20, 20);
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            padding: 40px;
-        }
-        
-        .kutia-hyrjes {
-            width: 400px;
-        }
-        
-        .titulli-hyrjes {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 30px;
-        }
-        
-        .titulli-hyrjes h2 {
-            font-size: 28px;
-        }
-        
-        .grupi-input {
-            margin-bottom: 20px;
-        }
-        
-        .grupi-input label {
-            display: block;
-            margin-bottom: 8px;
-            font-size: 14px;
-            color: lightgray;
-        }
-        
-        .grupi-input input {
-            width: 100%;
-            padding: 12px;
-            background-color: black;
-            border: 1px solid gray;
-            color: white;
-            border-radius: 4px;
-            font-size: 16px;
-        }
-        
-        .linku-harreses {
-            color: white;
-            font-size: 14px;
-            text-decoration: underline;
-            margin-bottom: 30px;
-            display: block;
-        }
-        
-        .butoni-dergo {
-            background-color: black;
-            color: white;
-            border: none;
-            width: 100%;
-            padding: 12px;
-            font-weight: bold;
-            cursor: pointer;
-            font-size: 16px;
-            margin-bottom: 20px;
-        }
-        
-        .butoni-dergo:hover {
-            text-decoration: underline;
-        }
-        
-        .butoni-sso {
-            width: 100%;
-            padding: 12px;
-            margin-bottom: 10px;
-            background-color: transparent;
-            border: 1px solid gray;
-            color: white;
-            border-radius: 4px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 10px;
-            cursor: pointer;
-            font-size: 14px;
-        }
-        
-        .butoni-sso:hover {
-            border-color: white;
-        }
-        
-        .ndaresja {
-            text-align: center;
-            margin: 20px 0;
-            color: gray;
-            font-size: 14px;
-        }
-        
-        .linku-poshte {
-            margin-top: 20px;
-            text-align: center;
-            font-size: 14px;
-        }
-        
-        .linku-poshte button {
-            background-color: transparent;
-            border: 1px solid gray;
-            color: white;
-            padding: 10px;
-            width: 100%;
-            border-radius: 4px;
-            margin-top: 10px;
-            cursor: pointer;
-        }
-    </style>
+    <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
     <header>
-        <div class="logo" onclick="ndrroFaqen('kryefaqja')">shutterstock</div>
+        <div class="logo clickable" onclick="nav('home')">shutterstock</div>
         <nav>
-            <a onclick="ndrroFaqen('kryefaqja')">Home</a>
-            <a onclick="ndrroFaqen('galeria')">Images</a>
-            <a onclick="ndrroFaqen('efektet-zerit')">Sound FX (Film)</a>
-            <a onclick="ndrroFaqen('pako-vfx')">VFX Packs (Film)</a>
-            <a onclick="ndrroFaqen('animim-2d')">2D Animation (Social)</a>
-            <a onclick="ndrroFaqen('animim-3d')">3D Animation (Film)</a>
-            <a onclick="ndrroFaqen('cmimet')">Pricing</a>
-            <a onclick="ndrroFaqen('kycu')">Log in</a>
-            <a onclick="ndrroFaqen('regjistrohu')">Sign up</a>
+            <a class="clickable" onclick="nav('home')">Images</a>
+            <a class="clickable" onclick="nav('video')">Video</a>
+            <a class="clickable" onclick="nav('music')">Music</a>
+            <a class="clickable" onclick="nav('objects')">3D</a>
+            <a class="clickable" onclick="nav('pricing')">Pricing</a>
+            <a class="clickable" onclick="nav('login')">Log in</a>
+            <a class="btn-profile clickable" onclick="nav('profile')"><i class="fa-solid fa-user"></i> Profile</a>
         </nav>
     </header>
 
-    <div id="kryefaqja" class="faqja">
-        <div class="ballina">
-            <h1>Where great work starts</h1>
-            <div class="shiriti-kerkimit">
-                <i class="fa-solid fa-magnifying-glass"></i>
-                <input type="text" placeholder="Search for images, videos, music...">
+    <div id="home" class="page active">
+        <div class="hero home-hero">
+            <h1>High-Quality Stock Images for Film</h1>
+            <div class="search-bar">
+                <input type="text" placeholder="Search Cinematic Shots, Film Photography, Sets...">
+                <button class="clickable"><i class="fa-solid fa-magnifying-glass"></i></button>
             </div>
         </div>
-        <div style="padding: 40px; text-align: center;">
-            <h2>One platform, endless possibilities</h2>
-            <p style="color: gray; margin-top: 10px;">Access millions of assets.</p>
-        </div>
-    </div>
 
-    <div id="galeria" class="faqja aktive">
-        <div class="kontejneri-kryesor">
-            <div class="shiriti-anesor">
-                <h3>Filtro Galerinë (Film & Social Media)</h3>
+        <div class="main-layout">
+            <div class="sidebar">
+                <h3>Filter Assets</h3>
 
-                <div class="grup-filtri">
-                    <strong>Zhanri i Filmit</strong>
-                    <select>
-                        <option>Të gjitha</option>
-                        <option>Aksion / Thriller</option>
-                        <option>Dramë / Romancë</option>
-                        <option>Sci-Fi / Fantazi</option>
-                        <option>Dokumentar</option>
-                    </select>
+                <div class="filter-group">
+                    <strong class="clickable" onclick="toggleFilter(this)">Aspect Ratio <i class="fa-solid fa-chevron-down"></i></strong>
+                    <div class="filter-options active">
+                        <label class="clickable"><input type="checkbox"> 16:9 (Widescreen)</label>
+                        <label class="clickable"><input type="checkbox"> 21:9 (Cinematic)</label>
+                        <label class="clickable"><input type="checkbox"> 4:3 (Vintage)</label>
+                    </div>
                 </div>
 
-                <div class="grup-filtri">
-                    <strong>Raporti i Aspektit (Për Video)</strong>
-                    <select>
-                        <option>Të gjitha</option>
-                        <option>2.35:1 (Kinema)</option>
-                        <option>16:9 (YouTube / TV)</option>
-                        <option>9:16 (TikTok / Reels)</option>
-                        <option>1:1 (Instagram Post)</option>
-                    </select>
+                <div class="filter-group">
+                    <strong class="clickable" onclick="toggleFilter(this)">Color Palette <i class="fa-solid fa-chevron-down"></i></strong>
+                    <div class="filter-options">
+                        <label class="clickable"><input type="checkbox"> Dark & Moody</label>
+                        <label class="clickable"><input type="checkbox"> Teal & Orange</label>
+                        <label class="clickable"><input type="checkbox"> Warm Sunlight</label>
+                    </div>
                 </div>
 
-                <div class="grup-filtri">
-                    <strong>Përdorimi i Mediave Sociale</strong>
-                    <div><input type="checkbox"> Sfond i Stories</div>
-                    <div><input type="checkbox"> Ikonë / Logo</div>
-                    <div><input type="checkbox"> Ekrani i Fundit (End Screen)</div>
+                <div class="filter-group">
+                    <strong class="clickable" onclick="toggleFilter(this)">Subject <i class="fa-solid fa-chevron-down"></i></strong>
+                    <div class="filter-options">
+                        <label class="clickable"><input type="checkbox"> Cityscape</label>
+                        <label class="clickable"><input type="checkbox"> Portrait</label>
+                    </div>
                 </div>
-
-                <div class="grup-filtri">
-                    <strong>Shpejtësia e Kuadrit (Frame Rate)</strong>
-                    <select>
-                        <option>Çdo shpejtësi</option>
-                        <option>24 fps (Standard Filmi)</option>
-                        <option>30 fps (Standard TV/Web)</option>
-                        <option>60 fps (Lëvizje e Qetë)</option>
-                    </select>
-                </div>
-
-                <div class="grup-filtri">
-                    <strong>Formati Optik</strong>
-                    <div><input type="checkbox"> Footage Video</div>
-                    <div><input type="checkbox"> Efekte (Overlays)</div>
-                    <div><input type="checkbox"> Sfond Muzikor</div>
-                </div>
-
             </div>
 
-            <div class="pjesa-permbajtjes">
-                <h2>Imazhet dhe Videot e Rëndësishme</h2>
-                <div class="rrjeti-galerise">
-                    <div class="foto-element"><img src="fotot/movie1.jpg"></div>
-                    <div class="foto-element"><img src="fotot/m2.jpg"></div>
-                    <div class="foto-element"><img src="fotot/m3.jpg"></div>
-                    <div class="foto-element"><img src="fotot/m4.jpg"></div>
-                    <div class="foto-element"><img src="fotot/m5.jpg"></div>
-                    <div class="foto-element"><img src="fotot/m6.jpg"></div>
-                    <div class="foto-element"><img src="fotot/m7.jpg"></div>
-                    <div class="foto-element"><img src="fotot/m8.jpg"></div>
+            <div class="content-area">
+                <h2>Trending Cinematic Shots</h2>
+                <div class="grid-3">
+                    <div class="card clickable"><img src="fotot/movie1.jpg" alt="Cinematic Shot"> <span class="license-badge paid">Standard License</span></div>
+                    <div class="card clickable"><img src="fotot/m2.jpg" alt="Cinematic Shot 2"> <span class="license-badge free">Free Download</span></div>
+                    <div class="card clickable"><img src="fotot/m3.jpg" alt="Cinematic Shot 3"> <span class="license-badge paid">Premium HD</span></div>
+                    <div class="card clickable"><img src="fotot/m4.jpg" alt="Cinematic Shot 4"> <span class="license-badge paid">Standard License</span></div>
+                    <div class="card clickable"><img src="fotot/m4.jpg" alt="Cinematic Shot 5"> <span class="license-badge paid">Premium HD</span></div>
+                    <div class="card clickable"><img src="fotot/m5.jpg" alt="Cinematic Shot 6"> <span class="license-badge paid">Standard License</span></div>
                 </div>
             </div>
         </div>
     </div>
 
-    <div id="efektet-zerit" class="faqja">
-        <h2 style="padding: 40px; text-align: center;">Koleksioni i Efekteve të Zërit (Sound FX) për Film</h2>
-        <p style="text-align: center; color: gray;">Mijëra efekte audio të gatshme për projektin tuaj filmik.</p>
-        <div style="height: 300px; background-color: rgb(30, 30, 30); margin: 40px; display: flex; justify-content: center; align-items: center;">
-            <i class="fa-solid fa-volume-up" style="font-size: 50px;"></i>
-        </div>
-    </div>
-
-    <div id="pako-vfx" class="faqja">
-        <h2 style="padding: 40px; text-align: center;">Pako të Efekteve Vizuale (VFX Packs) për Film</h2>
-        <p style="text-align: center; color: gray;">Përmirësoni videon tuaj me shpërthime, shkëlqime dhe animacione për filma.</p>
-        <div style="height: 300px; background-color: rgb(40, 40, 40); margin: 40px; display: flex; justify-content: center; align-items: center;">
-            <i class="fa-solid fa-meteor" style="font-size: 50px;"></i>
-        </div>
-    </div>
-
-    <div id="animim-2d" class="faqja">
-        <h2 style="padding: 40px; text-align: center;">Animacione 2D për Media Sociale</h2>
-        <p style="text-align: center; color: gray;">Elementë të animuar, shkronja dhe tranzicione të optimizuara për postimet sociale.</p>
-        <div style="height: 300px; background-color: rgb(50, 50, 50); margin: 40px; display: flex; justify-content: center; align-items: center;">
-            <i class="fa-solid fa-layer-group" style="font-size: 50px;"></i>
-        </div>
-    </div>
-
-    <div id="animim-3d" class="faqja">
-        <h2 style="padding: 40px; text-align: center;">Animacione 3D për Film</h2>
-        <p style="text-align: center; color: gray;">Modele dhe animacione 3D profesionale për prodhime filmike.</p>
-        <div style="height: 300px; background-color: rgb(60, 60, 60); margin: 40px; display: flex; justify-content: center; align-items: center;">
-            <i class="fa-solid fa-cube" style="font-size: 50px;"></i>
-        </div>
-    </div>
-
-    <div id="cmimet" class="faqja">
-        <h2 style="text-align: center; margin-top: 40px;">Choose a Plan</h2>
-        <div class="kontejneri-cmimeve">
-            <div class="karta-cmimit">
-                <h3>Pack</h3>
-                <div class="cmimi">$29</div>
-                <p style="color: gray; margin-bottom: 20px;">5 Images on demand</p>
-                <button class="butoni-cmimit">Buy Now</button>
+    <div id="video" class="page">
+        <div class="hero video-hero">
+            <h1>Explore Stock Videos & Footage</h1>
+            <div class="search-bar">
+                <input type="text" placeholder="Search 4K, HD, drone footage...">
+                <button class="clickable"><i class="fa-solid fa-video"></i></button>
             </div>
-            <div class="karta-cmimit" style="border-color: red;">
-                <h3>Subscription</h3>
-                <div class="cmimi">$49</div>
-                <p style="color: gray; margin-bottom: 20px;">10 Images / month</p>
-                <button class="butoni-cmimit" style="background-color: red; color: white;">Best Value</button>
+        </div>
+
+        <div class="main-layout">
+            <div class="sidebar">
+                <h3>Video Filters</h3>
+
+                <div class="filter-group">
+                    <strong class="clickable" onclick="toggleFilter(this)">Resolution <i class="fa-solid fa-chevron-down"></i></strong>
+                    <div class="filter-options active">
+                        <label class="clickable"><input type="checkbox"> 4K Ultra HD</label>
+                        <label class="clickable"><input type="checkbox"> Full HD (1080p)</label>
+                    </div>
+                </div>
+
+                <div class="filter-group">
+                    <strong class="clickable" onclick="toggleFilter(this)">FPS / Speed <i class="fa-solid fa-chevron-down"></i></strong>
+                    <div class="filter-options">
+                        <label class="clickable"><input type="checkbox"> Slow Motion</label>
+                        <label class="clickable"><input type="checkbox"> 24 FPS (Film Look)</label>
+                    </div>
+                </div>
             </div>
-            <div class="karta-cmimit">
-                <h3>Team</h3>
-                <div class="cmimi">$99</div>
-                <p style="color: gray; margin-bottom: 20px;">Unlimited users</p>
-                <button class="butoni-cmimit">Contact Us</button>
+
+            <div class="content-area">
+                <h2>Today's Trending Videos</h2>
+                <div class="grid-3">
+                    <div class="vid-card clickable"><img src="https://images.unsplash.com/photo-1517457373958-b7bdd4587205?w=600"><i class="fa-solid fa-play"></i><span class="license-badge paid">HD Video</span></div>
+                    <div class="vid-card clickable"><img src="https://images.unsplash.com/photo-1492691527719-9d1e07e534b4?w=600"><i class="fa-solid fa-play"></i><span class="license-badge paid">4K Pro</span></div>
+                    <div class="vid-card clickable"><img src="https://images.unsplash.com/photo-1535016120720-40c6874c3b1c?w=600"><i class="fa-solid fa-play"></i><span class="license-badge free">Free Preview</span></div>
+                </div>
             </div>
         </div>
     </div>
 
-    <div id="kycu" class="faqja">
-        <div class="korniza-hyrjes">
-            <div class="pjesa-majte">
-                <div class="shtresa-maske"></div>
-                <div class="pjesa-majte-tekst">
+    <div id="music" class="page">
+        <div class="hero music-hero">
+            <h1>Amp up your content with new music</h1>
+            <div class="search-bar">
+                <input type="text" placeholder="Search tracks, genre, mood...">
+                <button class="clickable"><i class="fa-solid fa-music"></i></button>
+            </div>
+            <div class="hero-tags">
+                <span><i class="fa-solid fa-magnifying-glass"></i> Inspirational</span>
+                <span><i class="fa-solid fa-magnifying-glass"></i> Uplifting</span>
+                <span><i class="fa-solid fa-magnifying-glass"></i> Corporate</span>
+                <span><i class="fa-solid fa-magnifying-glass"></i> Upbeat</span>
+            </div>
+        </div>
+
+        <div class="main-layout music-layout">
+            <div class="content-area full-width">
+                <div class="header-row">
+                    <h2>See what's trending now</h2>
+                    <div class="header-actions">
+                        <span>The latest</span>
+                        <span class="inactive">Most popular</span>
+                    </div>
+                </div>
+
+                <div class="track-list">
+                    <div class="track-row clickable">
+                        <button class="play-btn clickable"><i class="fa-solid fa-play"></i></button>
+                        <div class="track-info">
+                            <h4>Blossom Night</h4>
+                            <p>By Sunshine Music</p>
+                        </div>
+                        <div class="waveform-container">
+                            <div class="waveform static-wave-1"></div>
+                        </div>
+                        <div class="track-meta">
+                            <span class="duration">2:24</span>
+                            <span class="bpm">120 BPM</span>
+                        </div>
+                        <div class="track-actions">
+                            <button class="btn-icon"><i class="fa-regular fa-heart"></i></button>
+                            <button class="btn-icon"><i class="fa-solid fa-cart-shopping"></i></button>
+                        </div>
+                    </div>
+
+                    <div class="track-row clickable">
+                        <button class="play-btn clickable"><i class="fa-solid fa-play"></i></button>
+                        <div class="track-info">
+                            <h4>Ageless City</h4>
+                            <p>By Kara Sound</p>
+                        </div>
+                        <div class="waveform-container">
+                            <div class="waveform static-wave-2"></div>
+                        </div>
+                        <div class="track-meta">
+                            <span class="duration">2:36</span>
+                            <span class="bpm">94 BPM</span>
+                        </div>
+                        <div class="track-actions">
+                            <button class="btn-icon"><i class="fa-regular fa-heart"></i></button>
+                            <button class="btn-icon"><i class="fa-solid fa-cart-shopping"></i></button>
+                        </div>
+                    </div>
+
+                    <div class="track-row clickable">
+                        <button class="play-btn clickable"><i class="fa-solid fa-play"></i></button>
+                        <div class="track-info">
+                            <h4>Grieg "Notturno" Op.54</h4>
+                            <p>By Sunshine Music</p>
+                        </div>
+                        <div class="waveform-container">
+                            <div class="waveform static-wave-3"></div>
+                        </div>
+                        <div class="track-meta">
+                            <span class="duration">4:31</span>
+                            <span class="bpm">115 BPM</span>
+                        </div>
+                        <div class="track-actions">
+                            <button class="btn-icon"><i class="fa-regular fa-heart"></i></button>
+                            <button class="btn-icon"><i class="fa-solid fa-cart-shopping"></i></button>
+                        </div>
+                    </div>
+
+                    <div class="track-row clickable">
+                        <button class="play-btn clickable"><i class="fa-solid fa-play"></i></button>
+                        <div class="track-info">
+                            <h4>Chopin - Nocturne Op. 72</h4>
+                            <p>By Sunshine Music</p>
+                        </div>
+                        <div class="waveform-container">
+                            <div class="waveform static-wave-4"></div>
+                        </div>
+                        <div class="track-meta">
+                            <span class="duration">5:30</span>
+                            <span class="bpm">108 BPM</span>
+                        </div>
+                        <div class="track-actions">
+                            <button class="btn-icon"><i class="fa-regular fa-heart"></i></button>
+                            <button class="btn-icon"><i class="fa-solid fa-cart-shopping"></i></button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="centered-btn-area">
+                    <button class="btn-outline clickable">See more</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="objects" class="page">
+        <div class="hero objects-hero">
+            <h1>Design-ready 3D Objects</h1>
+            <button class="cta-red clickable">Explore 3D Library</button>
+        </div>
+        <div class="section">
+            <h2>Popular 3D Assets</h2>
+            <div class="grid-3">
+                <div class="obj-card clickable"><img src="https://images.unsplash.com/photo-1633412802994-5c058f151b66?w=500"><span>Electronics</span><span class="license-badge paid">Paid Asset</span></div>
+                <div class="obj-card clickable"><img src="https://images.unsplash.com/photo-1555680202-c86f0e12f086?w=500"><span>Office</span><span class="license-badge paid">Paid Asset</span></div>
+                <div class="obj-card clickable"><img src="https://images.unsplash.com/photo-1596495578065-6e0763fa1178?w=500"><span>Abstract</span><span class="license-badge free">Free Asset</span></div>
+            </div>
+        </div>
+    </div>
+
+    <div id="pricing" class="page">
+        <div class="pricing-container">
+            <h1>Pricing Plans</h1>
+            <p>Explore 500M+ assets & easy tools</p>
+            <div class="pricing-cards">
+                <div class="price-card">
+                    <h3>Packs</h3>
+                    <p>Ideal for one-time projects</p>
+                    <div class="price">€49</div>
+                    <ul>
+                        <li>5 Downloads</li>
+                        <li>Standard License</li>
+                    </ul>
+                    <button class="btn-outline clickable">Buy Now</button>
+                </div>
+                <div class="price-card highlight">
+                    <h3>Subscribe & Save</h3>
+                    <p>Best for regular creators</p>
+                    <div class="price">€29<span>/mo</span></div>
+                    <ul>
+                        <li>10 Downloads / mo</li>
+                        <li>Rollover unused credits</li>
+                    </ul>
+                    <button class="btn-fill clickable">Buy Now</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="login" class="page">
+        <div class="split-screen">
+            <div class="split-left">
+                <div class="overlay"></div>
+                <div class="split-content">
                     <h1>Bring your ideas to life</h1>
-                    <p>Tell your story with compelling images, videos, and music. Access our library of over 500 million high-quality assets.</p>
+                    <p>Access our library of high-quality assets today.</p>
                 </div>
             </div>
-            <div class="pjesa-djathte">
-                <div class="kutia-hyrjes">
-                    <div class="titulli-hyrjes">
-                        <h2>Login or Signup</h2>
-                    </div>
-
-                    <div class="grupi-input">
-                        <label>Email or username</label>
-                        <input type="text" placeholder="Email or username">
-                    </div>
-                    <div class="grupi-input">
-                        <label>Password</label>
-                        <input type="password" placeholder="Password">
-                    </div>
-
-                    <a href="#" class="linku-harreses">Forgot your password?</a>
-
-                    <button class="butoni-dergo">Log in</button>
-
-                    <button class="butoni-sso">Log in with SSO</button>
-                    <button class="butoni-sso"><i class="fa-brands fa-google"></i> Continue with Google</button>
-                    <button class="butoni-sso"><i class="fa-brands fa-facebook"></i> Continue with Facebook</button>
-                    <button class="butoni-sso"><i class="fa-brands fa-apple"></i> Continue with Apple</button>
-
-                    <div class="ndaresja">or</div>
-
-                    <div class="linku-poshte">
-                        Don't have a free account yet?
-                        <button onclick="ndrroFaqen('regjistrohu')">Create your account</button>
-                    </div>
+            <div class="split-right">
+                <div class="login-box">
+                    <h2>Login</h2>
+                    <label>Email</label>
+                    <input type="text" placeholder="Email address">
+                    <label>Password</label>
+                    <input type="password" placeholder="Password">
+                    <button class="btn-fill full-width clickable">Log in</button>
+                    <div class="or-divider">or</div>
+                    <button class="btn-outline full-width clickable"><i class="fa-brands fa-google"></i> Continue with Google</button>
+                    <p class="bottom-text">Don't have an account? <a onclick="nav('login')" class="clickable">Sign up</a></p>
                 </div>
             </div>
         </div>
     </div>
 
-    <div id="regjistrohu" class="faqja">
-        <div class="korniza-hyrjes">
-            <div class="pjesa-majte">
-                <div class="shtresa-maske"></div>
-                <div class="pjesa-majte-tekst">
-                    <h1>Join the community</h1>
-                    <p>Start downloading today. Get free weekly assets and try our AI tools.</p>
-                </div>
+    <div id="profile" class="page">
+        <div class="section-profile">
+            <h1>My Account</h1>
+            <div class="profile-tabs">
+                <button class="tab-btn active clickable" onclick="showTab('dashboard')">Dashboard</button>
+                <button class="tab-btn clickable" onclick="showTab('creator')">Become a Creator</button>
             </div>
-            <div class="pjesa-djathte">
-                <div class="kutia-hyrjes">
-                    <div class="titulli-hyrjes">
-                        <h2>Create Account</h2>
-                    </div>
 
-                    <div class="grupi-input">
-                        <label>Full Name</label>
-                        <input type="text" placeholder="Full Name">
-                    </div>
-                    <div class="grupi-input">
-                        <label>Email</label>
-                        <input type="text" placeholder="Email address">
-                    </div>
-                    <div class="grupi-input">
-                        <label>Password</label>
-                        <input type="password" placeholder="Create a password">
-                    </div>
+            <div id="dashboard" class="tab-content active">
+                <p>Welcome back! You have 5 downloads remaining in your pack.</p>
+                <button class="btn-fill clickable" onclick="nav('pricing')">Renew Subscription</button>
+            </div>
 
-                    <button class="butoni-dergo" style="background-color: red; margin-top: 10px;">Sign Up</button>
+            <div id="creator" class="tab-content">
+                <h2>Contributor Application</h2>
+                <p class="verification-note">Verification takes 4-5 business days. Once approved, you can upload and sell your high-quality assets globally.</p>
+                <form class="creator-form">
+                    <label>Portfolio Link</label>
+                    <input type="url" placeholder="Link to your best work (e.g., Vimeo, ArtStation)" required>
 
-                    <div class="linku-poshte">
-                        Already have an account?
-                        <button onclick="ndrroFaqen('kycu')">Log in</button>
-                    </div>
-                </div>
+                    <label>Reason for Joining</label>
+                    <textarea rows="4" placeholder="Briefly describe your style and the type of content you plan to submit."></textarea>
+
+                    <button type="submit" class="btn-fill clickable">Submit Request</button>
+                    <p class="small-text">By clicking submit, you agree to our contributor terms.</p>
+                </form>
             </div>
         </div>
     </div>
+
+    <div id="about" class="page">
+        <div class="section about-section">
+            <h1>About Shutterstock Clone</h1>
+            <p>We are a fictional platform dedicated to providing high-quality, cinematic assets for the film and media industry. Our mission is to connect talented creators with filmmakers globally, offering professional stock media at competitive prices.</p>
+            <p>Our focus is on deep, rich, and high-resolution content that meets the standards of professional production houses.</p>
+        </div>
+    </div>
+
+
+    <footer>
+        <div class="footer-links">
+            <div class="footer-col">
+                <strong>Company</strong>
+                <a class="clickable" onclick="nav('about')">About Us</a>
+                <a class="clickable" onclick="nav('profile')">Careers</a>
+                <a class="clickable" onclick="nav('profile')">Contribute</a>
+            </div>
+            <div class="footer-col">
+                <strong>Assets</strong>
+                <a class="clickable" onclick="nav('home')">Images</a>
+                <a class="clickable" onclick="nav('video')">Video</a>
+                <a class="clickable" onclick="nav('music')">Music</a>
+            </div>
+            <div class="footer-col">
+                <strong>Support</strong>
+                <a class="clickable">Contact</a>
+                <a class="clickable">FAQ</a>
+                <a class="clickable">Terms of Use</a>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 Shutterstock Clone. All rights reserved.</p>
+        </div>
+    </footer>
 
     <script>
-        function ndrroFaqen(idFaqes) {
-            const faqet = document.querySelectorAll('.faqja');
-            faqet.forEach(faqe => faqe.classList.remove('aktive'));
-
-            document.getElementById(idFaqes).classList.add('aktive');
-
+        function nav(pageId) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.getElementById(pageId).classList.add('active');
             window.scrollTo(0, 0);
         }
 
-        ndrroFaqen('galeria');
+        function toggleFilter(element) {
+            element.classList.toggle('active');
+            const options = element.nextElementSibling;
+            options.classList.toggle('active');
+        }
+
+        function showTab(tabId) {
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+
+            document.querySelector(`.tab-btn[onclick*="${tabId}"]`).classList.add('active');
+            document.getElementById(tabId).classList.add('active');
+        }
     </script>
 </body>
 
