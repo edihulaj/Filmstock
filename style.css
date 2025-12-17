@@ -10,11 +10,7 @@ body {
     background-color: #0b0b0b;
     color: white;
     overflow-x: hidden;
-    /* Prevent horizontal scroll on mobile */
 }
-
-
-/* AUTHENTIC/FILM GRAIN & VIGNETTE EFFECT */
 
 body::before {
     content: "";
@@ -25,15 +21,10 @@ body::before {
     height: 100%;
     pointer-events: none;
     z-index: 10000;
-    /* Using a subtle CSS noise texture to simulate film grain */
     background-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAiIGhlaWdodD0iMTAwIj48ZmlsdGVyIGlkPSJuIj48ZmVUdXJidWxlbmNlIHR5cGU9ImZyYWN0YWxOb2lzZSIgYmFzZUZyZXF1ZW5jeT0iLjY1IiBzdGl0Y2hUaWxlcz0ic3RpdGNoIj48L2ZlVHVyYnVsZW5jZT48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSJyZ2JhKDAuMDY3LDAsMCwwLjA4KSIgb3BhY2l0eT0iLjMiLz48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSJ0cmFuc3BhcmVudCIgZmlsdGVyPSJ1cmwoI24pIiBvcGFjaXR5PSIuMSI+PC9yZWN0Pjwvc3ZnPg==");
     opacity: 0.25;
-    /* Increased opacity for more effect */
     background-size: 100px 100px;
 }
-
-
-/* NEW: Vignette for deeper, more authentic cinematic feel */
 
 body::after {
     content: "";
@@ -44,13 +35,9 @@ body::after {
     height: 100%;
     pointer-events: none;
     z-index: 9999;
-    /* Dark radial gradient from center to edges */
     background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.5) 100%);
     opacity: 0.8;
 }
-
-
-/* --- UTILITIES --- */
 
 a.clickable,
 button.clickable,
@@ -63,9 +50,6 @@ button.clickable,
 .vid-card.clickable {
     cursor: pointer;
 }
-
-
-/* NEW: Utility class for Login/Logout toggle */
 
 .hidden {
     display: none !important;
@@ -88,7 +72,7 @@ button.clickable,
 }
 
 
-/* --- HEADER --- */
+/* headeri */
 
 header {
     display: flex;
@@ -116,7 +100,7 @@ header {
 }
 
 
-/* Mobile Menu Button */
+/* mobile*/
 
 .mobile-menu-btn {
     display: none;
@@ -145,9 +129,6 @@ nav a:hover,
     color: white;
 }
 
-
-/* --- PAGE ANIMATION --- */
-
 .page {
     display: none;
     min-height: calc(100vh - 80px);
@@ -168,9 +149,6 @@ nav a:hover,
         transform: translateY(0);
     }
 }
-
-
-/* --- HERO SECTIONS --- */
 
 .hero {
     height: 350px;
@@ -226,9 +204,6 @@ nav a:hover,
     background-size: cover;
 }
 
-
-/* About Hero Style */
-
 .about-hero {
     background: url('https://images.unsplash.com/photo-1542435503-9d10e0fe3378?w=1200');
     background-size: cover;
@@ -253,7 +228,7 @@ nav a:hover,
 }
 
 
-/* --- SEARCH BAR --- */
+/* searchi */
 
 .search-bar {
     display: flex;
@@ -283,9 +258,6 @@ nav a:hover,
     color: #ff3333;
     font-size: 18px;
 }
-
-
-/* --- LAYOUTS --- */
 
 .main-layout {
     display: flex;
@@ -370,9 +342,6 @@ nav a:hover,
     font-size: 14px;
     text-decoration: none;
 }
-
-
-/* --- GRIDS & CARDS --- */
 
 .home-categories {
     display: grid;
@@ -471,9 +440,6 @@ nav a:hover,
     color: white;
 }
 
-
-/* --- HOME PAGE EXTRAS --- */
-
 .brand-strip {
     display: flex;
     justify-content: space-around;
@@ -544,9 +510,6 @@ nav a:hover,
     border-radius: 0 6px 6px 0;
 }
 
-
-/* --- MUSIC WAVEFORMS --- */
-
 .track-row {
     display: flex;
     align-items: center;
@@ -598,9 +561,6 @@ nav a:hover,
     background: #ff3333;
 }
 
-
-/* Randomize animation delays for effect */
-
 .bar:nth-child(odd) {
     animation-duration: 0.8s;
 }
@@ -628,7 +588,7 @@ nav a:hover,
 }
 
 
-/* --- PRICING PAGE --- */
+/* pricing */
 
 .pricing-container {
     max-width: 1200px;
@@ -702,7 +662,7 @@ nav a:hover,
 }
 
 
-/* --- PROFILE EDITING --- */
+/* profili */
 
 .profile-header-card {
     background: #1a1a1a;
@@ -828,9 +788,6 @@ nav a:hover,
     margin-bottom: 40px;
 }
 
-
-/* --- EXPLORE NAV --- */
-
 .explore-nav {
     display: flex;
     gap: 20px;
@@ -859,9 +816,6 @@ nav a:hover,
     background: #222;
 }
 
-
-/* --- BUTTONS --- */
-
 .btn-fill {
     background: #ff3333;
     color: white;
@@ -888,9 +842,6 @@ nav a:hover,
     border-color: white;
     background: #333;
 }
-
-
-/* --- MODAL --- */
 
 .modal-overlay {
     display: none;
@@ -952,7 +903,7 @@ nav a:hover,
 }
 
 
-/* --- LOGIN/SIGNUP --- */
+/* login dhe signup */
 
 .split-screen {
     display: flex;
@@ -989,7 +940,7 @@ nav a:hover,
 }
 
 
-/* --- FOOTER --- */
+/* footeri */
 
 footer {
     background: #000;
@@ -1026,9 +977,6 @@ footer {
 .footer-col a:hover {
     color: #ff3333;
 }
-
-
-/* --- MOBILE RESPONSIVE --- */
 
 @media (max-width: 768px) {
     header {
