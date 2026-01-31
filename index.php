@@ -7,7 +7,7 @@ $is_logged_in = isset($_SESSION['user_id']);
 
 // Default values for Guest
 $user_name = 'Guest';
-// DEFAULT AVATAR 
+// DEFAULT AVATAR (used if user has none)
 $user_avatar = 'https://cdn-icons-png.flaticon.com/512/149/149071.png'; 
 $is_creator = false;
 
