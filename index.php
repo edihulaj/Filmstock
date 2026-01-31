@@ -1,3 +1,46 @@
+<?php
+session_start();
+require 'db.php';
+
+// Check Login State
+$is_logged_in = isset($_SESSION['user_id']);
+
+// Default values for Guest
+$user_name = 'Guest';
+// DEFAULT AVATAR 
+$user_avatar = 'https://cdn-icons-png.flaticon.com/512/149/149071.png'; 
+$is_creator = false;
+
+if($is_logged_in) {
+    try {
+        $stmt = $conn->prepare("SELECT * FROM users WHERE id = ?");
+        $stmt->execute([$_SESSION['user_id']]);
+        $user_data = $stmt->fetch(PDO::FETCH_ASSOC);
+        
+        if($user_data) {
+            $user_name = $user_data['name'];
+            
+            // FIX: If avatar is null in DB, use the default one
+            $user_avatar = (!empty($user_data['avatar'])) ? $user_data['avatar'] : $user_avatar;
+            
+            $is_creator = ($user_data['is_creator'] == 1);
+            
+            // Update session so other pages know the new name/pfp
+            $_SESSION['name'] = $user_name;
+            $_SESSION['avatar'] = $user_avatar;
+            $_SESSION['is_creator'] = $user_data['is_creator'];
+        }
+    } catch(Exception $e) {
+        // Silent error
+    }
+    
+    // Fetch user's uploaded assets
+    $my_assets = [];
+    $stmt = $conn->prepare("SELECT * FROM assets WHERE user_id = ? ORDER BY created_at DESC");
+    $stmt->execute([$_SESSION['user_id']]);
+    $my_assets = $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -7,6 +50,32 @@
     <title>Filmstock - VFX & Stock Assets</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
+    <style>
+        .creator-dashboard {
+            background: #222;
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid #ff3333;
+            margin-bottom: 40px;
+        }
+        .creator-dashboard input, .creator-dashboard select, .creator-dashboard textarea {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            background: #111;
+            border: 1px solid #333;
+            color: white;
+            border-radius: 4px;
+        }
+        .my-uploads-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        /* Ensure Nav items are visible */
+        nav a { display: inline-block; }
+    </style>
 </head>
 
 <body>
@@ -22,11 +91,16 @@
             <a class="clickable" onclick="nav('vfx')">VFX Packs</a>
             <a class="clickable" onclick="nav('pricing')">Pricing</a>
 
-            <a id="nav-login" class="clickable" onclick="nav('login')">Log in</a>
-            <a id="nav-signup" class="btn-fill clickable" onclick="nav('signup')">Sign Up</a>
-
-            <a id="nav-profile" class="btn-profile clickable hidden" onclick="nav('profile')"><i class="fa-solid fa-user"></i></a>
-            <a id="nav-logout" class="clickable hidden" onclick="logOut()">Log Out</a>
+            <?php if(!$is_logged_in): ?>
+                <a class="clickable" onclick="nav('login')">Log in</a>
+                <a class="btn-fill clickable" onclick="nav('signup')">Sign Up</a>
+            <?php else: ?>
+                <a class="btn-profile clickable" onclick="nav('profile')">
+                    <img src="<?php echo htmlspecialchars($user_avatar); ?>" style="width:20px; height:20px; border-radius:50%; vertical-align:middle; margin-right:5px;"> 
+                    <?php echo htmlspecialchars($user_name); ?>
+                </a>
+                <a class="clickable" onclick="logOut()">Log Out</a>
+            <?php endif; ?>
         </nav>
     </header>
 
@@ -116,7 +190,6 @@
                 <button class="clickable"><i class="fa-solid fa-magnifying-glass"></i></button>
             </div>
         </div>
-
         <div class="main-layout">
             <div class="sidebar">
                 <h3>Image Filters</h3>
@@ -136,8 +209,6 @@
                     </div>
                 </div>
             </div>
-
-
             <div class="content-area">
                 <div class="section-header">
                     <h2>Trending Now</h2><a class="clickable">View All</a></div>
@@ -152,17 +223,13 @@
                     <div class="card clickable" onclick="openModal('fotot/m10.jpg', 'Old Building', 'paid')"><img src="fotot/m10.jpg"><span class="license-badge paid">Editor's Choice</span></div>
                     <div class="card clickable" onclick="openModal('fotot/m9.jpg', 'Modern Picture ', 'paid')"><img src="fotot/m9.jpg"><span class="license-badge paid">Editor's Choice</span></div>
                 </div>
-
-                <div class="section-header">
-                    <h2>Full Catalog</h2>
-                </div>
+                <div class="section-header"><h2>Full Catalog</h2></div>
                 <div class="grid-4">
-                    <div class="card clickable" onclick="openModal('https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?w=600', 'Traveler', 'paid')"><img src="https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?w=600"></div>
-                    <div class="card clickable" onclick="openModal('https://images.unsplash.com/photo-1517685633466-403d6955aeab?w=600', 'City Lights', 'paid')"><img src="https://images.unsplash.com/photo-1517685633466-403d6955aeab?w=600"></div>
-                    <div class="card clickable" onclick="openModal('https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=600', 'Mountains', 'free')"><img src="https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=600"></div>
-                    <div class="card clickable" onclick="openModal('fotot/m2.jpg', 'Rain Drops', 'paid')"><img src="fotot/m2.jpg"></div>
+                     <div class="card clickable" onclick="openModal('https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?w=600', 'Traveler', 'paid')"><img src="https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?w=600"></div>
+                     <div class="card clickable" onclick="openModal('https://images.unsplash.com/photo-1517685633466-403d6955aeab?w=600', 'City Lights', 'paid')"><img src="https://images.unsplash.com/photo-1517685633466-403d6955aeab?w=600"></div>
+                     <div class="card clickable" onclick="openModal('https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=600', 'Mountains', 'free')"><img src="https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=600"></div>
+                     <div class="card clickable" onclick="openModal('fotot/m2.jpg', 'Rain Drops', 'paid')"><img src="fotot/m2.jpg"></div>
                 </div>
-
                 <div class="explore-nav">
                     <a class="explore-card clickable" onclick="nav('video')">Explore Video</a>
                     <a class="explore-card clickable" onclick="nav('vfx')">Explore VFX</a>
@@ -179,7 +246,6 @@
                 <button class="clickable"><i class="fa-solid fa-video"></i></button>
             </div>
         </div>
-
         <div class="main-layout">
             <div class="sidebar">
                 <h3>Video Filters</h3>
@@ -198,11 +264,8 @@
                     </div>
                 </div>
             </div>
-
             <div class="content-area">
-                <div class="section-header">
-                    <h2>Trending Clips</h2>
-                </div>
+                <div class="section-header"><h2>Trending Clips</h2></div>
                 <div class="grid-3">
                     <div class="vid-card clickable" onclick="openModal('fotot/m3.jpg', ' Nightcrawler. Mirror shot', 'paid')"><img src="fotot/m3.jpg"><span class="license-badge paid">4K</span></div>
                     <div class="vid-card clickable" onclick="openModal('fotot/m7.jpg', 'Hallway with outdoor light comming through', 'paid')"><img src="fotot/m7.jpg"><span class="license-badge paid">HD</span></div>
@@ -212,21 +275,14 @@
                     <div class="vid-card clickable" onclick="openModal('fotot/m2.jpg', 'Oppenheimer - Rain Drops', 'free')"><img src="fotot/m2.jpg"><span class="license-badge paid">Premium </span></div>
                     <div class="vid-card clickable" onclick="openModal('fotot/movie1.jpg', 'Lady Crying Scene', 'free')"><img src="fotot/movie1.jpg"><span class="license-badge paid">4K</span></div>
                     <div class="vid-card clickable" onclick="openModal('fotot/m5.jpg', 'B&W Scene', 'free')"><img src="fotot/m5.jpg"><span class="license-badge free">Free</span></div>
-
-
-
                 </div>
-
-                <div class="section-header">
-                    <h2>Action & Sports</h2>
-                </div>
+                <div class="section-header"><h2>Action & Sports</h2></div>
                 <div class="grid-4">
                     <div class="vid-card clickable" onclick="openModal('https://images.unsplash.com/photo-1551632811-561732d1e306?w=600', 'Running', 'paid')"><img src="https://images.unsplash.com/photo-1551632811-561732d1e306?w=600"></div>
                     <div class="vid-card clickable" onclick="openModal('https://images.unsplash.com/photo-1478720568477-152d9b164e63?w=600', 'MotoX', 'paid')"><img src="fotot/pexels-jonatas-tinoco-2777521-4318822.jpg"></div>
                     <div class="vid-card clickable" onclick="openModal('https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=600', 'Singing', 'paid')"><img src="https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=600"></div>
                     <div class="vid-card clickable" onclick="openModal('https://images.unsplash.com/photo-1444703686981-a3abbc4d4fe3?w=600', 'Galaxy Belt', 'free')"><img src="https://images.unsplash.com/photo-1444703686981-a3abbc4d4fe3?w=600"></div>
                 </div>
-
                 <div class="explore-nav">
                     <a class="explore-card clickable" onclick="nav('music')">Explore Music</a>
                     <a class="explore-card clickable" onclick="nav('images')">Explore Images</a>
@@ -243,7 +299,6 @@
                 <button class="clickable"><i class="fa-solid fa-music"></i></button>
             </div>
         </div>
-
         <div class="main-layout">
             <div class="sidebar">
                 <h3>Music Filters</h3>
@@ -256,87 +311,29 @@
                     </div>
                 </div>
             </div>
-
             <div class="content-area">
-                <div class="section-header">
-                    <h2>Top Charts</h2>
-                </div>
-
+                <div class="section-header"><h2>Top Charts</h2></div>
                 <div class="track-row clickable" onclick="alert('Playing Epic Rise')">
-                    <div class="track-info">
-                        <h4>Epic Rise</h4>
-                        <p>Trailer Music</p>
-                    </div>
+                    <div class="track-info"><h4>Epic Rise</h4><p>Trailer Music</p></div>
                     <div class="waveform-visual">
-                        <div class="bar"></div>
-                        <div class="bar"></div>
-                        <div class="bar"></div>
-                        <div class="bar"></div>
-                        <div class="bar"></div>
-                        <div class="bar"></div>
-                        <div class="bar"></div>
-                        <div class="bar"></div>
-                        <div class="bar"></div>
-                        <div class="bar"></div>
-                        <div class="bar"></div>
-                        <div class="bar"></div>
-                        <div class="bar"></div>
-                        <div class="bar"></div>
-                        <div class="bar"></div>
+                        <div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div>
                     </div>
                     <i class="fa-solid fa-play-circle" style="font-size:24px; color:#ff3333;"></i>
                 </div>
-
                 <div class="track-row clickable" onclick="alert('Playing Corporate Day')">
-                    <div class="track-info">
-                        <h4>Corporate Day</h4>
-                        <p>Background</p>
-                    </div>
+                    <div class="track-info"><h4>Corporate Day</h4><p>Background</p></div>
                     <div class="waveform-visual">
-                        <div class="bar"></div>
-                        <div class="bar"></div>
-                        <div class="bar"></div>
-                        <div class="bar"></div>
-                        <div class="bar"></div>
-                        <div class="bar"></div>
-                        <div class="bar"></div>
-                        <div class="bar"></div>
-                        <div class="bar"></div>
-                        <div class="bar"></div>
-                        <div class="bar"></div>
-                        <div class="bar"></div>
-                        <div class="bar"></div>
-                        <div class="bar"></div>
-                        <div class="bar"></div>
+                        <div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div>
                     </div>
                     <i class="fa-solid fa-play-circle" style="font-size:24px; color:#ff3333;"></i>
                 </div>
-
                 <div class="track-row clickable" onclick="alert('Playing Night Drive')">
-                    <div class="track-info">
-                        <h4>Night Drive</h4>
-                        <p>Synthwave</p>
-                    </div>
+                    <div class="track-info"><h4>Night Drive</h4><p>Synthwave</p></div>
                     <div class="waveform-visual">
-                        <div class="bar"></div>
-                        <div class="bar"></div>
-                        <div class="bar"></div>
-                        <div class="bar"></div>
-                        <div class="bar"></div>
-                        <div class="bar"></div>
-                        <div class="bar"></div>
-                        <div class="bar"></div>
-                        <div class="bar"></div>
-                        <div class="bar"></div>
-                        <div class="bar"></div>
-                        <div class="bar"></div>
-                        <div class="bar"></div>
-                        <div class="bar"></div>
-                        <div class="bar"></div>
+                        <div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div>
                     </div>
                     <i class="fa-solid fa-play-circle" style="font-size:24px; color:#ff3333;"></i>
                 </div>
-
                 <div class="explore-nav">
                     <a class="explore-card clickable" onclick="nav('vfx')">Explore VFX</a>
                 </div>
@@ -349,7 +346,6 @@
             <h1>VFX Packs & Assets</h1>
             <button class="btn-fill clickable">Download Starter Pack</button>
         </div>
-
         <div class="main-layout">
             <div class="sidebar">
                 <h3>VFX Filters</h3>
@@ -362,48 +358,23 @@
                     </div>
                 </div>
             </div>
-
             <div class="content-area">
-                <div class="section-header">
-                    <h2>Popular Packs</h2>
-                </div>
+                <div class="section-header"><h2>Popular Packs</h2></div>
                 <div class="grid-3">
-                    <div class="obj-card clickable" onclick="openModal('fotot/exp1.jpg', 'Smoke Pack', 'paid')">
-                        <img src="fotot/exp1.jpg">
-                        <span style="display:block; padding:10px;">Smoke pack</span><span class="license-badge paid">Bundle</span>
-                    </div>
-                    <div class="obj-card clickable" onclick="openModal('fotot/exp2.jpg', 'Jellyfish Pack', 'free')">
-                        <img src="fotot/exp2.jpg">
-                        <span style="display:block; padding:10px;">Jellyfish Pack</span><span class="license-badge free">Free</span>
-                    </div>
-                    <div class="obj-card clickable" onclick="openModal('fotot/exp3.jpg', 'Pirate Ship Pack', 'paid')">
-                        <img src="fotot/exp3.jpg">
-                        <span style="display:block; padding:10px;">Pirate Ship</span><span class="license-badge paid">Pro</span>
-                    </div>
-                    <div class="obj-card clickable" onclick="openModal('fotot/exp4.jpg', 'Flame Pack', 'paid')">
-                        <img src="fotot/exp4.jpg">
-                        <span style="display:block; padding:10px;">Flame Pack</span><span class="license-badge paid">Pro</span>
-                    </div>
-                    <div class="obj-card clickable" onclick="openModal('fotot/exp5.jpg', 'F-16 Jet Pack', 'paid')">
-                        <img src="fotot/exp5.jpg">
-                        <span style="display:block; padding:10px;">F-16 Jet Pack</span><span class="license-badge paid">Pro</span>
-                    </div>
-                    <div class="obj-card clickable" onclick="openModal('fotot/exp6.jpg', 'Fog Elements', 'paid')">
-                        <img src="fotot/exp6.jpg">
-                        <span style="display:block; padding:10px;">Realistic Fog</span><span class="license-badge paid">Pro</span>
-                    </div>
+                    <div class="obj-card clickable" onclick="openModal('fotot/exp1.jpg', 'Smoke Pack', 'paid')"><img src="fotot/exp1.jpg"><span style="display:block; padding:10px;">Smoke pack</span><span class="license-badge paid">Bundle</span></div>
+                    <div class="obj-card clickable" onclick="openModal('fotot/exp2.jpg', 'Jellyfish Pack', 'free')"><img src="fotot/exp2.jpg"><span style="display:block; padding:10px;">Jellyfish Pack</span><span class="license-badge free">Free</span></div>
+                    <div class="obj-card clickable" onclick="openModal('fotot/exp3.jpg', 'Pirate Ship Pack', 'paid')"><img src="fotot/exp3.jpg"><span style="display:block; padding:10px;">Pirate Ship</span><span class="license-badge paid">Pro</span></div>
+                    <div class="obj-card clickable" onclick="openModal('fotot/exp4.jpg', 'Flame Pack', 'paid')"><img src="fotot/exp4.jpg"><span style="display:block; padding:10px;">Flame Pack</span><span class="license-badge paid">Pro</span></div>
+                    <div class="obj-card clickable" onclick="openModal('fotot/exp5.jpg', 'F-16 Jet Pack', 'paid')"><img src="fotot/exp5.jpg"><span style="display:block; padding:10px;">F-16 Jet Pack</span><span class="license-badge paid">Pro</span></div>
+                    <div class="obj-card clickable" onclick="openModal('fotot/exp6.jpg', 'Fog Elements', 'paid')"><img src="fotot/exp6.jpg"><span style="display:block; padding:10px;">Realistic Fog</span><span class="license-badge paid">Pro</span></div>
                 </div>
-
-                <div class="section-header">
-                    <h2>Explosions & Fire</h2>
-                </div>
+                <div class="section-header"><h2>Explosions & Fire</h2></div>
                 <div class="grid-4">
                     <div class="obj-card clickable" onclick="openModal('fotot/exp7.jpg', 'Explosion 1', 'paid')"><img src="fotot/exp7.jpg"></div>
                     <div class="obj-card clickable" onclick="openModal('fotot/exp8.jpg', 'Fire', 'paid')"><img src="fotot/exp8.jpg"></div>
                     <div class="obj-card clickable" onclick="openModal('fotot/exp9.jpg', 'Flame', 'paid')"><img src="fotot/ecp9.jpg"></div>
                     <div class="obj-card clickable" onclick="openModal('fotot/exp1.jpg', 'Smoke', 'paid')"><img src="fotot/exp1.jpg"></div>
                 </div>
-
                 <div class="explore-nav">
                     <a class="explore-card clickable" onclick="nav('video')">Explore Video</a>
                     <a class="explore-card clickable" onclick="nav('pricing')">Get All Access</a>
@@ -419,39 +390,29 @@
         </div>
         <div class="section" style="max-width: 1000px; margin: 40px auto; padding: 0 20px;">
             <h2>Our Mission</h2>
-            <p style="color:#aaa; line-height: 1.6; margin-top:15px;">Filmstock was founded on the belief that professional-grade cinematic assets should be accessible to all creators, regardless of budget. We hand-curate every piece of footage, music track, and VFX element to ensure it meets the demanding standards
-                of modern filmmaking. We prioritize quality, simplicity, and unlimited access over confusing credits and restrictive licenses. Our goal is to empower your vision.</p>
+            <p style="color:#aaa; line-height: 1.6; margin-top:15px;">Filmstock was founded on the belief that professional-grade cinematic assets should be accessible to all creators, regardless of budget. We hand-curate every piece of footage, music track, and VFX element to ensure it meets the demanding standards of modern filmmaking. We prioritize quality, simplicity, and unlimited access over confusing credits and restrictive licenses. Our goal is to empower your vision.</p>
             <div class="features-grid" style="margin-top: 50px;">
-                <div class="feature-box">
-                    <i class="fa-solid fa-camera-movie"></i>
-                    <h3>Cinematic Quality</h3>
-                    <p>Assets are captured or designed by industry professionals.</p>
-                </div>
-                <div class="feature-box">
-                    <i class="fa-solid fa-earth-americas"></i>
-                    <h3>Global Community</h3>
-                    <p>Serving millions of creators in over 150 countries.</p>
-                </div>
-                <div class="feature-box">
-                    <i class="fa-solid fa-award"></i>
-                    <h3>Curated Excellence</h3>
-                    <p>Only the best assets make it into the Filmstock library.</p>
-                </div>
+                <div class="feature-box"><i class="fa-solid fa-camera-movie"></i><h3>Cinematic Quality</h3><p>Assets are captured or designed by industry professionals.</p></div>
+                <div class="feature-box"><i class="fa-solid fa-earth-americas"></i><h3>Global Community</h3><p>Serving millions of creators in over 150 countries.</p></div>
+                <div class="feature-box"><i class="fa-solid fa-award"></i><h3>Curated Excellence</h3><p>Only the best assets make it into the Filmstock library.</p></div>
             </div>
         </div>
     </div>
+
     <div id="profile" class="page">
+        <?php if($is_logged_in): ?>
         <div class="section-profile">
             <div class="profile-header-card">
                 <input type="file" id="pfpInput" style="display:none;" accept="image/*" onchange="updateProfilePic(event)">
                 <div class="profile-avatar-wrapper" onclick="document.getElementById('pfpInput').click()">
-                    <img src="https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?w=400" alt="Profile" class="profile-avatar" id="profileImg">
+                    <img src="<?php echo htmlspecialchars($user_avatar); ?>" alt="Profile" class="profile-avatar" id="profileImg">
                     <div class="edit-overlay"><i class="fa-solid fa-pen"></i></div>
                 </div>
 
                 <div class="profile-info">
-                    <h1 class="editable-name" contenteditable="true">Alex Director</h1>
-                    <span class="handle">@alex_shoots_film</span>
+                    <h1 class="editable-name" contenteditable="true" onblur="saveProfileName(this)"><?php echo htmlspecialchars($user_name); ?></h1>
+                    <span class="handle">@<?php echo strtolower(str_replace(' ', '', $user_name)); ?></span>
+                    
                     <div class="profile-stats">
                         <div class="stat-box"><span>12</span><small>Downloads</small></div>
                         <div class="stat-box"><span>4</span><small>Collections</small></div>
@@ -469,20 +430,66 @@
                 </div>
             </div>
 
+            <?php if($is_creator): ?>
+            <div class="creator-dashboard">
+                <h2 style="color:#ff3333; margin-bottom:15px;"><i class="fa-solid fa-wand-magic-sparkles"></i> Creator Studio</h2>
+                <form id="creatorUploadForm" onsubmit="uploadCreatorAsset(event)">
+                    <input type="text" name="title" placeholder="Asset Title" required>
+                    <textarea name="description" placeholder="Description..." rows="3"></textarea>
+                    <select name="type">
+                        <option value="image">Stock Image</option>
+                        <option value="video">Video Footage</option>
+                        <option value="music">Music/SFX</option>
+                        <option value="vfx">VFX Asset</option>
+                    </select>
+                    <input type="file" name="file" required>
+                    <button type="submit" id="uploadBtn" class="btn-fill clickable">Upload Asset</button>
+                </form>
+            </div>
+            <?php else: ?>
             <div class="creator-cta">
                 <h2>Become a Filmstock Creator</h2>
                 <p style="margin: 10px 0 20px 0; color:#999;">Sell your footage and VFX packs to millions of creators worldwide.</p>
                 <button class="btn-fill clickable" onclick="openCreatorModal()">Apply Now</button>
             </div>
+            <?php endif; ?>
 
             <div class="section-header">
-                <h2>Recent Downloads</h2>
+                <h2><?php echo $is_creator ? 'My Uploads' : 'Recent Downloads'; ?></h2>
             </div>
-            <div class="grid-4">
-                <div class="card clickable" onclick="openModal('https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=600', 'VFX', 'paid')"><img src="https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=600"><span class="license-badge paid">VFX</span></div>
-                <div class="card clickable" onclick="openModal('https://images.unsplash.com/photo-1517457373958-b7bdd4587205?w=600', 'IMG', 'paid')"><img src="https://images.unsplash.com/photo-1517457373958-b7bdd4587205?w=600"><span class="license-badge paid">IMG</span></div>
-            </div>
+            
+            <?php if($is_creator && !empty($my_assets)): ?>
+                <div class="my-uploads-grid">
+                    <?php foreach($my_assets as $asset): ?>
+                        <div class="card clickable" onclick="openModal('<?php echo $asset['file_path']; ?>', '<?php echo htmlspecialchars($asset['title']); ?>', 'paid')">
+                            <?php if($asset['type'] == 'image' || $asset['type'] == 'vfx'): ?>
+                                <img src="<?php echo $asset['file_path']; ?>" style="height:150px; object-fit:cover; width:100%;">
+                            <?php else: ?>
+                                <div style="height:150px; background:#111; display:flex; align-items:center; justify-content:center; color:#555; width:100%;">
+                                    <i class="fa-solid fa-file-video" style="font-size:40px;"></i>
+                                </div>
+                            <?php endif; ?>
+                            <div style="padding:10px;">
+                                <strong><?php echo htmlspecialchars($asset['title']); ?></strong>
+                                <span class="license-badge paid" style="position:static; float:right;"><?php echo strtoupper($asset['type']); ?></span>
+                            </div>
+                        </div>
+                    <?php endforeach; ?>
+                </div>
+            <?php else: ?>
+                <div class="grid-4">
+                    <div class="card clickable" onclick="openModal('https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=600', 'VFX', 'paid')"><img src="https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=600"><span class="license-badge paid">VFX</span></div>
+                    <div class="card clickable" onclick="openModal('https://images.unsplash.com/photo-1517457373958-b7bdd4587205?w=600', 'IMG', 'paid')"><img src="https://images.unsplash.com/photo-1517457373958-b7bdd4587205?w=600"><span class="license-badge paid">IMG</span></div>
+                </div>
+            <?php endif; ?>
+
         </div>
+        <?php else: ?>
+            <div style="padding:100px; text-align:center;">
+                <h2>Please Log In to view your profile</h2>
+                <button class="btn-fill clickable" onclick="nav('login')" style="margin-top:20px;">Go to Login</button>
+            </div>
+        <?php endif; ?>
     </div>
 
     <div id="pricing" class="page">
@@ -490,11 +497,9 @@
             <h1>Simple Pricing</h1>
             <p>One subscription. Unlimited possibilities.</p>
         </div>
-
         <div class="pricing-container">
             <div class="pricing-card">
-                <h3>Starter</h3>
-                <div class="price">$0<span>/mo</span></div>
+                <h3>Starter</h3><div class="price">$0<span>/mo</span></div>
                 <ul class="features-list">
                     <li><i class="fa-solid fa-check"></i> Standard License</li>
                     <li><i class="fa-solid fa-check"></i> 5 Downloads/mo</li>
@@ -502,11 +507,9 @@
                 </ul>
                 <button class="btn-outline clickable" onclick="nav('signup')">Sign Up Free</button>
             </div>
-
             <div class="pricing-card popular">
                 <div class="pop-badge">BEST VALUE</div>
-                <h3>Pro Creator</h3>
-                <div class="price">$29<span>/mo</span></div>
+                <h3>Pro Creator</h3><div class="price">$29<span>/mo</span></div>
                 <ul class="features-list">
                     <li><i class="fa-solid fa-check"></i> Commercial License</li>
                     <li><i class="fa-solid fa-check"></i> Unlimited Downloads</li>
@@ -515,10 +518,8 @@
                 </ul>
                 <button class="btn-fill full-width clickable" onclick="nav('signup')">Start Free Trial</button>
             </div>
-
             <div class="pricing-card">
-                <h3>Studio</h3>
-                <div class="price">$99<span>/mo</span></div>
+                <h3>Studio</h3><div class="price">$99<span>/mo</span></div>
                 <ul class="features-list">
                     <li><i class="fa-solid fa-check"></i> Broadcast License</li>
                     <li><i class="fa-solid fa-check"></i> 5 Team Seats</li>
@@ -572,9 +573,7 @@
                     <li><i class="fa-solid fa-check" style="color:#ff3333; margin-right:10px;"></i> Royalty Free</li>
                     <li><i class="fa-solid fa-check" style="color:#ff3333; margin-right:10px;"></i> High Quality</li>
                 </ul>
-                <div style="margin-top:auto">
-                    <button class="btn-fill full-width clickable">Download / Buy</button>
-                </div>
+                <div style="margin-top:auto"><button class="btn-fill full-width clickable">Download / Buy</button></div>
             </div>
         </div>
     </div>
@@ -585,7 +584,6 @@
             <div class="modal-info-col" style="padding: 30px;">
                 <h2 style="margin-bottom: 20px;">Creator Application</h2>
                 <p style="color:#999; margin-bottom: 20px;">Join our exclusive network and earn royalties on your assets.</p>
-
                 <form onsubmit="event.preventDefault(); submitCreatorApplication();">
                     <input type="text" id="creatorName" placeholder="Full Name" required style="width: 100%; padding: 12px; margin-bottom: 15px; background: #222; border: 1px solid #333; color: white; border-radius: 4px;">
                     <input type="email" id="creatorEmail" placeholder="Email Address" required style="width: 100%; padding: 12px; margin-bottom: 15px; background: #222; border: 1px solid #333; color: white; border-radius: 4px;">
@@ -596,31 +594,16 @@
             </div>
         </div>
     </div>
+
     <footer>
         <div class="footer-links">
-            <div class="footer-col">
-                <strong>Filmstock</strong>
-                <a class="clickable" onclick="nav('about')">About Us</a>
-                <a class="clickable">Careers</a>
-                <a class="clickable">Blog</a>
-            </div>
-            <div class="footer-col">
-                <strong>Browse</strong>
-                <a class="clickable" onclick="nav('vfx')">VFX Packs</a>
-                <a class="clickable" onclick="nav('video')">Stock Video</a>
-                <a class="clickable" onclick="nav('music')">Music</a>
-            </div>
-            <div class="footer-col">
-                <strong>Support</strong>
-                <a class="clickable">Help Center</a>
-                <a class="clickable">Licensing</a>
-                <a class="clickable">Contact</a>
-            </div>
+            <div class="footer-col"><strong>Filmstock</strong><a class="clickable" onclick="nav('about')">About Us</a><a class="clickable">Careers</a><a class="clickable">Blog</a></div>
+            <div class="footer-col"><strong>Browse</strong><a class="clickable" onclick="nav('vfx')">VFX Packs</a><a class="clickable" onclick="nav('video')">Stock Video</a><a class="clickable" onclick="nav('music')">Music</a></div>
+            <div class="footer-col"><strong>Support</strong><a class="clickable">Help Center</a><a class="clickable">Licensing</a><a class="clickable">Contact</a></div>
         </div>
         <div style="text-align:center; color:#555; margin-top:40px; font-size:12px;">&copy; 2023 Filmstock Assets. All rights reserved.</div>
     </footer>
 
     <script src="script.js"></script>
 </body>
-
 </html>

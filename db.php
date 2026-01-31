@@ -5,9 +5,9 @@ $pass = "";
 $dbname = "filmstock";
 
 try {
-    $conn = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8", $user, $pass);
+    $conn = new PDO("mysql:host=$host;dbname=$dbname", $user, $pass);
     $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 } catch(PDOException $e) {
-    die("Lidhja deshtoi: " . $e->getMessage());
+    die("Connection failed: " . $e->getMessage());
 }
 ?>
