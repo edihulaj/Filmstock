@@ -47,7 +47,8 @@ button.clickable,
 .obj-card.clickable,
 .cat-card.clickable,
 .explore-card.clickable,
-.vid-card.clickable {
+.vid-card.clickable,
+.community-asset-card.clickable {
     cursor: pointer;
 }
 
@@ -201,6 +202,11 @@ nav a:hover,
 
 .vfx-hero {
     background: url('fotot/bts2.jpg');
+    background-size: cover;
+}
+
+.community-hero {
+    background: url('fotot/bts3.jpg');
     background-size: cover;
 }
 
@@ -395,7 +401,8 @@ nav a:hover,
 
 .card,
 .vid-card,
-.obj-card {
+.obj-card,
+.community-asset-card {
     background: #1a1a1a;
     border-radius: 6px;
     overflow: hidden;
@@ -405,14 +412,16 @@ nav a:hover,
 
 .card:hover,
 .vid-card:hover,
-.obj-card:hover {
+.obj-card:hover,
+.community-asset-card:hover {
     border-color: #444;
     transform: translateY(-3px);
 }
 
 .card img,
 .vid-card img,
-.obj-card img {
+.obj-card img,
+.community-asset-card img {
     width: 100%;
     height: 180px;
     object-fit: cover;

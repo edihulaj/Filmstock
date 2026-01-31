@@ -130,8 +130,10 @@ window.submitCreatorApplication = function() {
     setTimeout(() => {
         alert("Application submitted! If approved, an admin will grant you access via the database.");
         window.closeCreatorModal();
-        if (btn) { btn.innerText = "Submit Application";
-            btn.disabled = false; }
+        if (btn) {
+            btn.innerText = "Submit Application";
+            btn.disabled = false;
+        }
     }, 1500);
 }
 
@@ -140,7 +142,8 @@ window.submitCreatorApplication = function() {
 // 1. Update Profile Picture
 window.updateProfilePic = function(event) {
     const file = event.target.files[0];
-    const imgPreview = document.getElementById('profileImg');
+    const imgPreview = document.getElementById('profileImg'); // The big one in profile
+    const navPreview = document.querySelector('.btn-profile img'); // The small one in nav
 
     if (file) {
         let formData = new FormData();
@@ -153,12 +156,13 @@ window.updateProfilePic = function(event) {
             .then(res => res.text())
             .then(data => {
                 if (data.startsWith('success|')) {
-                    const newSrc = data.split('|')[1];
-                    if (imgPreview) imgPreview.src = newSrc;
-                    // Reload to update navbar avatar too
-                    setTimeout(() => location.reload(), 500);
+                    const newPath = data.split('|')[1];
+                    // Update both images immediately without reload
+                    if (imgPreview) imgPreview.src = newPath;
+                    if (navPreview) navPreview.src = newPath;
+                    alert("Profile picture updated!");
                 } else {
-                    alert('Upload failed');
+                    alert("Error: " + data);
                 }
             });
     }
@@ -199,7 +203,7 @@ window.uploadCreatorAsset = function(e) {
         .then(res => res.text())
         .then(data => {
             if (data.trim() === 'success') {
-                alert('Asset uploaded successfully!');
+                alert('Asset uploaded successfully! It will now appear in the Community section.');
                 window.location.reload();
             } else {
                 alert('Error: ' + data);
@@ -207,6 +211,24 @@ window.uploadCreatorAsset = function(e) {
                 btn.disabled = false;
             }
         });
+}
+
+// Community search functionality
+window.searchCommunity = function() {
+    const searchInput = document.querySelector('#community .search-bar input');
+    const searchTerm = searchInput.value.toLowerCase();
+    const assetCards = document.querySelectorAll('.community-asset-card');
+
+    assetCards.forEach(card => {
+        const title = card.querySelector('strong').textContent.toLowerCase();
+        const creator = card.querySelector('.asset-creator-info span').textContent.toLowerCase();
+
+        if (title.includes(searchTerm) || creator.includes(searchTerm)) {
+            card.style.display = 'block';
+        } else {
+            card.style.display = 'none';
+        }
+    });
 }
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -223,4 +245,26 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     }
+
+    // Add event listener for community search
+    const communitySearchInput = document.querySelector('#community .search-bar input');
+    const communitySearchButton = document.querySelector('#community .search-bar button');
+
+    if (communitySearchInput && communitySearchButton) {
+        communitySearchButton.addEventListener('click', searchCommunity);
+        communitySearchInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                searchCommunity();
+            }
+        });
+    }
+
+    // Add filtering for community assets
+    const filterCheckboxes = document.querySelectorAll('#community .filter-options input[type="checkbox"]');
+    filterCheckboxes.forEach(checkbox => {
+        checkbox.addEventListener('change', function() {
+            // Filter logic would go here
+            console.log('Filter changed:', this.value);
+        });
+    });
 });

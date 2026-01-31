@@ -40,6 +40,22 @@ if($is_logged_in) {
     $stmt->execute([$_SESSION['user_id']]);
     $my_assets = $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
+
+// Fetch community assets (all public assets)
+$community_assets = [];
+try {
+    $stmt = $conn->prepare("
+        SELECT assets.*, users.name as creator_name, users.avatar as creator_avatar 
+        FROM assets 
+        LEFT JOIN users ON assets.user_id = users.id 
+        ORDER BY assets.created_at DESC
+        LIMIT 50
+    ");
+    $stmt->execute();
+    $community_assets = $stmt->fetchAll(PDO::FETCH_ASSOC);
+} catch(Exception $e) {
+    // Silent error
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -73,6 +89,54 @@ if($is_logged_in) {
             gap: 15px;
             margin-top: 20px;
         }
+        /* Community asset card styles */
+        .community-asset-card {
+            position: relative;
+            background: #1a1a1a;
+            border-radius: 6px;
+            overflow: hidden;
+            border: 1px solid transparent;
+            transition: all 0.3s ease;
+        }
+        .community-asset-card:hover {
+            border-color: #444;
+            transform: translateY(-3px);
+        }
+        .community-asset-card img {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+            display: block;
+        }
+        .asset-creator-info {
+            padding: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .asset-creator-info img {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+        }
+        .asset-creator-info span {
+            font-size: 12px;
+            color: #888;
+        }
+        .asset-details {
+            padding: 10px;
+        }
+        .asset-stats {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 8px;
+            font-size: 12px;
+            color: #666;
+        }
+        .asset-stats i {
+            margin-right: 5px;
+        }
         /* Ensure Nav items are visible */
         nav a { display: inline-block; }
     </style>
@@ -89,6 +153,7 @@ if($is_logged_in) {
             <a class="clickable" onclick="nav('video')">Video</a>
             <a class="clickable" onclick="nav('music')">Music</a>
             <a class="clickable" onclick="nav('vfx')">VFX Packs</a>
+            <a class="clickable" onclick="nav('community')">Community</a>
             <a class="clickable" onclick="nav('pricing')">Pricing</a>
 
             <?php if(!$is_logged_in): ?>
@@ -383,6 +448,106 @@ if($is_logged_in) {
         </div>
     </div>
 
+    <div id="community" class="page">
+        <div class="hero community-hero">
+            <h1>Community Assets</h1>
+            <p>Discover amazing content created by our talented community</p>
+            <div class="search-bar">
+                <input type="text" placeholder="Search community assets...">
+                <button class="clickable"><i class="fa-solid fa-magnifying-glass"></i></button>
+            </div>
+        </div>
+        <div class="main-layout">
+            <div class="sidebar">
+                <h3>Community Filters</h3>
+                <div class="filter-group">
+                    <strong class="clickable" onclick="toggleFilter(this)">Asset Type <i class="fa-solid fa-chevron-down"></i></strong>
+                    <div class="filter-options active">
+                        <label><input type="checkbox"> Images</label>
+                        <label><input type="checkbox"> Video</label>
+                        <label><input type="checkbox"> Music</label>
+                        <label><input type="checkbox"> VFX</label>
+                    </div>
+                </div>
+                <div class="filter-group">
+                    <strong class="clickable" onclick="toggleFilter(this)">Sort By <i class="fa-solid fa-chevron-down"></i></strong>
+                    <div class="filter-options active">
+                        <label><input type="radio" name="sort" checked> Newest</label>
+                        <label><input type="radio" name="sort"> Most Popular</label>
+                        <label><input type="radio" name="sort"> Trending</label>
+                    </div>
+                </div>
+            </div>
+            <div class="content-area">
+                <div class="section-header">
+                    <h2>Recently Uploaded</h2>
+                    <span style="color: #888; font-size: 14px;"><?php echo count($community_assets); ?> assets shared</span>
+                </div>
+                
+                <?php if(!empty($community_assets)): ?>
+                    <div class="grid-3">
+                        <?php foreach($community_assets as $asset): 
+                            $creator_avatar = !empty($asset['creator_avatar']) ? $asset['creator_avatar'] : 'https://cdn-icons-png.flaticon.com/512/149/149071.png';
+                        ?>
+                            <div class="community-asset-card clickable" onclick="openModal('<?php echo $asset['file_path']; ?>', '<?php echo htmlspecialchars($asset['title']); ?>', 'community')">
+                                <?php if($asset['type'] == 'image' || $asset['type'] == 'vfx'): ?>
+                                    <img src="<?php echo $asset['file_path']; ?>">
+                                <?php else: ?>
+                                    <div style="height:180px; background:#111; display:flex; align-items:center; justify-content:center; color:#555;">
+                                        <i class="fa-solid fa-file-video" style="font-size:40px;"></i>
+                                    </div>
+                                <?php endif; ?>
+                                
+                                <div class="asset-creator-info">
+                                    <img src="<?php echo htmlspecialchars($creator_avatar); ?>" alt="Creator">
+                                    <span>by <?php echo htmlspecialchars($asset['creator_name'] ?? 'Unknown Creator'); ?></span>
+                                </div>
+                                
+                                <div class="asset-details">
+                                    <strong style="display:block; margin-bottom:5px;"><?php echo htmlspecialchars($asset['title']); ?></strong>
+                                    <span class="license-badge <?php echo ($asset['type'] == 'image' || $asset['type'] == 'vfx') ? 'paid' : 'free'; ?>" style="position:static; display:inline-block; margin-bottom:5px;">
+                                        <?php echo strtoupper($asset['type']); ?>
+                                    </span>
+                                    <div class="asset-stats">
+                                        <span><i class="fa-regular fa-calendar"></i> <?php echo date('M d, Y', strtotime($asset['created_at'])); ?></span>
+                                        <span><i class="fa-regular fa-eye"></i> 0 views</span>
+                                    </div>
+                                </div>
+                            </div>
+                        <?php endforeach; ?>
+                    </div>
+                <?php else: ?>
+                    <div style="text-align:center; padding:60px; color:#666;">
+                        <i class="fa-solid fa-cloud-arrow-up" style="font-size:60px; margin-bottom:20px;"></i>
+                        <h3>No community assets yet</h3>
+                        <p>Be the first to share your work with the community!</p>
+                        <?php if($is_creator): ?>
+                            <button class="btn-fill clickable" onclick="nav('profile')" style="margin-top:20px;">Upload Your First Asset</button>
+                        <?php else: ?>
+                            <button class="btn-fill clickable" onclick="openCreatorModal()" style="margin-top:20px;">Become a Creator</button>
+                        <?php endif; ?>
+                    </div>
+                <?php endif; ?>
+                
+                <div class="section-header" style="margin-top:40px;">
+                    <h2>Top Creators This Week</h2>
+                </div>
+                
+                <div style="background:#1a1a1a; padding:20px; border-radius:8px; margin-bottom:40px;">
+                    <p style="color:#888; text-align:center;">Community stats coming soon!</p>
+                </div>
+                
+                <div class="explore-nav">
+                    <a class="explore-card clickable" onclick="nav('vfx')">Explore VFX</a>
+                    <a class="explore-card clickable" onclick="nav('video')">Explore Video</a>
+                    <?php if($is_creator): ?>
+                        <a class="explore-card clickable" onclick="nav('profile')" style="background:#ff3333; color:white;">Upload to Community</a>
+                    <?php endif; ?>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div id="about" class="page">
         <div class="hero about-hero">
             <h1>Our Story: For Filmmakers, By Filmmakers</h1>
@@ -444,6 +609,7 @@ if($is_logged_in) {
                     </select>
                     <input type="file" name="file" required>
                     <button type="submit" id="uploadBtn" class="btn-fill clickable">Upload Asset</button>
+                    <p style="color:#888; font-size:12px; margin-top:10px;">Uploaded assets will appear in the Community section</p>
                 </form>
             </div>
             <?php else: ?>
@@ -456,6 +622,9 @@ if($is_logged_in) {
 
             <div class="section-header">
                 <h2><?php echo $is_creator ? 'My Uploads' : 'Recent Downloads'; ?></h2>
+                <?php if($is_creator): ?>
+                    <a class="clickable" onclick="nav('community')" style="color:#ff3333; font-size:14px;">View in Community →</a>
+                <?php endif; ?>
             </div>
             
             <?php if($is_creator && !empty($my_assets)): ?>
@@ -598,7 +767,7 @@ if($is_logged_in) {
     <footer>
         <div class="footer-links">
             <div class="footer-col"><strong>Filmstock</strong><a class="clickable" onclick="nav('about')">About Us</a><a class="clickable">Careers</a><a class="clickable">Blog</a></div>
-            <div class="footer-col"><strong>Browse</strong><a class="clickable" onclick="nav('vfx')">VFX Packs</a><a class="clickable" onclick="nav('video')">Stock Video</a><a class="clickable" onclick="nav('music')">Music</a></div>
+            <div class="footer-col"><strong>Browse</strong><a class="clickable" onclick="nav('vfx')">VFX Packs</a><a class="clickable" onclick="nav('video')">Stock Video</a><a class="clickable" onclick="nav('music')">Music</a><a class="clickable" onclick="nav('community')">Community</a></div>
             <div class="footer-col"><strong>Support</strong><a class="clickable">Help Center</a><a class="clickable">Licensing</a><a class="clickable">Contact</a></div>
         </div>
         <div style="text-align:center; color:#555; margin-top:40px; font-size:12px;">&copy; 2023 Filmstock Assets. All rights reserved.</div>

@@ -2,37 +2,45 @@
 session_start();
 require 'db.php';
 
-// Check if user is logged in AND is a creator
-if(isset($_SESSION['user_id']) && isset($_SESSION['is_creator']) && $_SESSION['is_creator'] == 1) {
-    
-    if(isset($_FILES['file'], $_POST['title'], $_POST['type'])) {
-        $title = $_POST['title'];
-        $desc = $_POST['description'] ?? '';
-        $type = $_POST['type'];
-        
-        $targetDir = "uploads/assets/";
-        if (!file_exists($targetDir)) {
-            mkdir($targetDir, 0777, true);
-        }
+if(!isset($_SESSION['user_id'])) { die("Login required"); }
 
-        $fileName = time() . "_" . basename($_FILES['file']['name']);
-        $targetFilePath = $targetDir . $fileName;
+// Verify Creator Status
+$stmt = $conn->prepare("SELECT is_creator FROM users WHERE id = ?");
+$stmt->execute([$_SESSION['user_id']]);
+$user = $stmt->fetch();
+
+if(!$user || $user['is_creator'] != 1) { die("Permission denied"); }
+
+if(isset($_FILES['file'], $_POST['title'], $_POST['type'])) {
+    $user_id = $_SESSION['user_id'];
+    $title = $_POST['title'];
+    $type = $_POST['type'];
+
+    // Use absolute paths
+    $uploadDir = "uploads/assets/";
+    $serverDir = __DIR__ . "/" . $uploadDir;
+    
+    if (!file_exists($serverDir)) { 
+        mkdir($serverDir, 0777, true); 
+    }
+
+    $ext = pathinfo($_FILES['file']['name'], PATHINFO_EXTENSION);
+    $filename = "asset_" . $user_id . "_" . time() . "." . $ext;
+    
+    $targetPath = $serverDir . $filename;
+    $dbPath = $uploadDir . $filename;
+
+    if(move_uploaded_file($_FILES['file']['tmp_name'], $targetPath)) {
+        $sql = "INSERT INTO assets (user_id, title, type, file_path, created_at) VALUES (?, ?, ?, ?, NOW())";
+        $stmt = $conn->prepare($sql);
         
-        if(move_uploaded_file($_FILES['file']['tmp_name'], $targetFilePath)) {
-            try {
-                $stmt = $conn->prepare("INSERT INTO assets (user_id, title, description, file_path, type) VALUES (?, ?, ?, ?, ?)");
-                $stmt->execute([$_SESSION['user_id'], $title, $desc, $targetFilePath, $type]);
-                echo "success";
-            } catch(PDOException $e) {
-                echo "Database Error: " . $e->getMessage();
-            }
+        if($stmt->execute([$user_id, $title, $type, $dbPath])) {
+            echo "success";
         } else {
-            echo "Error moving file.";
+            echo "Database error";
         }
     } else {
-        echo "Missing data.";
+        echo "File move failed";
     }
-} else {
-    echo "Permission denied.";
 }
 ?>
