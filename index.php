@@ -2,10 +2,10 @@
 session_start();
 require 'db.php';
 
-// Check Login State
+// Kontrollon statusin e loginit
 $is_logged_in = isset($_SESSION['user_id']);
 
-// Default values for Guest
+
 $user_name = 'Guest';
 // DEFAULT AVATAR (used if user has none)
 $user_avatar = 'https://cdn-icons-png.flaticon.com/512/149/149071.png'; 
@@ -20,12 +20,12 @@ if($is_logged_in) {
         if($user_data) {
             $user_name = $user_data['name'];
             
-            // FIX: If avatar is null in DB, use the default one
+            // FIX
             $user_avatar = (!empty($user_data['avatar'])) ? $user_data['avatar'] : $user_avatar;
             
             $is_creator = ($user_data['is_creator'] == 1);
             
-            // Update session so other pages know the new name/pfp
+            // Update session
             $_SESSION['name'] = $user_name;
             $_SESSION['avatar'] = $user_avatar;
             $_SESSION['is_creator'] = $user_data['is_creator'];
@@ -340,6 +340,11 @@ try {
                     <div class="vid-card clickable" onclick="openModal('fotot/m2.jpg', 'Oppenheimer - Rain Drops', 'free')"><img src="fotot/m2.jpg"><span class="license-badge paid">Premium </span></div>
                     <div class="vid-card clickable" onclick="openModal('fotot/movie1.jpg', 'Lady Crying Scene', 'free')"><img src="fotot/movie1.jpg"><span class="license-badge paid">4K</span></div>
                     <div class="vid-card clickable" onclick="openModal('fotot/m5.jpg', 'B&W Scene', 'free')"><img src="fotot/m5.jpg"><span class="license-badge free">Free</span></div>
+                    <div class="vid-card clickable" onclick="openModal('fotot/m18.jpg', 'All Quiet on the Western Front', 'paid')"><img src="fotot/m18.jpg"><span class="license-badge paid">Premium</span></div>
+                    <div class="vid-card clickable" onclick="openModal('fotot/m19.jpg', 'At Eternity\'s Gate', 'free')"><img src="fotot/m19.jpg"><span class="license-badge free">Free</span></div>
+                    <div class="vid-card clickable" onclick="openModal('fotot/m20.jpg', 'Sound of Metal', 'paid')"><img src="fotot/m20.jpg"><span class="license-badge paid">Premium</span></div>
+                    <div class="vid-card clickable" onclick="openModal('fotot/m21.jpg', 'The Hateful Eight', 'paid')"><img src="fotot/m21.jpg"><span class="license-badge paid">Premium</span></div>
+                    <div class="vid-card clickable" onclick="openModal('fotot/m22.jpg', 'Dune: Part Two', 'paid')"><img src="fotot/m22.jpg"><span class="license-badge paid">Premium</span></div>
                 </div>
                 <div class="section-header"><h2>Action & Sports</h2></div>
                 <div class="grid-4">
@@ -549,21 +554,21 @@ try {
     </div>
 
     <div id="about" class="page">
-        <div class="hero about-hero">
-            <h1>Our Story: For Filmmakers, By Filmmakers</h1>
-            <p>We are a passionate team dedicated to building the most authentic and high-quality asset library for the film industry.</p>
-        </div>
-        <div class="section" style="max-width: 1000px; margin: 40px auto; padding: 0 20px;">
-            <h2>Our Mission</h2>
-            <p style="color:#aaa; line-height: 1.6; margin-top:15px;">Filmstock was founded on the belief that professional-grade cinematic assets should be accessible to all creators, regardless of budget. We hand-curate every piece of footage, music track, and VFX element to ensure it meets the demanding standards of modern filmmaking. We prioritize quality, simplicity, and unlimited access over confusing credits and restrictive licenses. Our goal is to empower your vision.</p>
-            <div class="features-grid" style="margin-top: 50px;">
-                <div class="feature-box"><i class="fa-solid fa-camera-movie"></i><h3>Cinematic Quality</h3><p>Assets are captured or designed by industry professionals.</p></div>
-                <div class="feature-box"><i class="fa-solid fa-earth-americas"></i><h3>Global Community</h3><p>Serving millions of creators in over 150 countries.</p></div>
-                <div class="feature-box"><i class="fa-solid fa-award"></i><h3>Curated Excellence</h3><p>Only the best assets make it into the Filmstock library.</p></div>
-            </div>
+    <!-- SHËNIM: ZËVENDËSO 'fotot/about-background.jpg' ME FOTOGRAFINË TËNDE -->
+    <div class="hero about-hero" style="background: url('fotot/about-background.jpg') no-repeat center center; background-size: cover;">
+        <h1>Our Story: For Filmmakers, By Filmmakers</h1>
+        <p>We are a passionate team dedicated to building the most authentic and high-quality asset library for the film industry.</p>
+    </div>
+    <div class="section" style="max-width: 1000px; margin: 40px auto; padding: 0 20px;">
+        <h2>Our Mission</h2>
+        <p style="color:#aaa; line-height: 1.6; margin-top:15px;">Filmstock was founded on the belief that professional-grade cinematic assets should be accessible to all creators, regardless of budget. We hand-curate every piece of footage, music track, and VFX element to ensure it meets the demanding standards of modern filmmaking. We prioritize quality, simplicity, and unlimited access over confusing credits and restrictive licenses. Our goal is to empower your vision.</p>
+        <div class="features-grid" style="margin-top: 50px;">
+            <div class="feature-box"><i class="fa-solid fa-camera-movie"></i><h3>Cinematic Quality</h3><p>Assets are captured or designed by industry professionals.</p></div>
+            <div class="feature-box"><i class="fa-solid fa-earth-americas"></i><h3>Global Community</h3><p>Serving millions of creators in over 150 countries.</p></div>
+            <div class="feature-box"><i class="fa-solid fa-award"></i><h3>Curated Excellence</h3><p>Only the best assets make it into the Filmstock library.</p></div>
         </div>
     </div>
-
+</div>
     <div id="profile" class="page">
         <?php if($is_logged_in): ?>
         <div class="section-profile">
